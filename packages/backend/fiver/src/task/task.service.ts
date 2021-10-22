@@ -35,7 +35,9 @@ export class TaskService {
   }
 
   async findAll() {
-    const allTasks = await this.taskRepository.find();
+    const allTasks = await this.taskRepository.find({
+      relations: ['poster'],
+    });
     return allTasks;
   }
 
