@@ -3,5 +3,8 @@
   "private": true,
   "devDependencies": {
     "lerna": "^4.0.0"
+  },
+  "scripts": {
+    "setup": "yarn install && npx lerna bootstrap --npm-client=yarn",
   }
 }
