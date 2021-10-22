@@ -5,7 +5,7 @@
     "lerna": "^3.22.1"
   },
   "scripts": {
-    "setup": "yarn install && npx lerna bootstrap --npm-client=yarn --ignore-engines",
+    "setup": "yarn install && npx lerna bootstrap --npm-client=yarn",
     "start": "lerna run start:dev --npm-client=yarn"
   }
 }
