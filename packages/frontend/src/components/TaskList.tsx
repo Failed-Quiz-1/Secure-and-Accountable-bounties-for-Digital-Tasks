@@ -4,9 +4,6 @@ import TaskCard from './TaskCard';
 
 const TaskList = () => {
     return <div>
-        <Header as='h2' attached='top'>
-            Tasks Postings
-        </Header>
         <Item.Group divided>
             <TaskCard />
             <TaskCard />

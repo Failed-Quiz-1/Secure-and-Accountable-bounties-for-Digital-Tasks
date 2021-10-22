@@ -6,7 +6,7 @@ import { Container } from 'semantic-ui-react';
 
 function App() {
   return (
-    <div className="App">
+    <div style={{paddingTop: '22px'}}>
       <Container>
         <HomePage />
       </Container>

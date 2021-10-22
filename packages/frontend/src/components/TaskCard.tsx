@@ -4,7 +4,6 @@ import { Button, Card, Icon, Item, Label } from 'semantic-ui-react';
 
 const TaskCard = () => (
     <Item>
-        {/* <Item.Image src='/images/wireframe/image.png' /> */}
         <Item.Content>
             <Item.Header as='a'>Help to build a new social media app</Item.Header>
             <Item.Meta>
