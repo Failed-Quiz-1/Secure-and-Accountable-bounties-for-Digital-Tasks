@@ -1,5 +1,5 @@
 import { Users } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('task')
 export class Task{
@@ -21,10 +21,10 @@ export class Task{
   @Column({default: 0})
   approval_draft_id: number;
 
-  @Column({ default: "pub" })
+  @Column({ default: "" })
   payment_signature: string;
 
-  @Column({ default: "pub" })
+  @Column({ default: "" })
   ip_signature: string;
 }
 

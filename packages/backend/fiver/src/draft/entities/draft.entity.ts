@@ -13,10 +13,10 @@ export class Draft {
   @ManyToOne(() => Task, { onDelete: 'CASCADE' })
   task: Task;
 
-  @Column({default:"dsk"})
+  @Column({default:""})
   draft_signature: string;
 
-  @Column({default:"dsk"})
+  @Column({default:""})
   reject_signature: string;
 
   @CreateDateColumn({ type: 'timestamp' })

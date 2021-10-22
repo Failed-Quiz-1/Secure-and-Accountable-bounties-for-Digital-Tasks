@@ -12,7 +12,6 @@ export class DraftController {
     return this.draftService.create(createDraftDto);
   }
 
-
   @Patch(':id')
   update(@Param('id') id: string, @Body() rejectDraftDto: RejectDraftDto) {
     return this.draftService.update(+id, rejectDraftDto);
