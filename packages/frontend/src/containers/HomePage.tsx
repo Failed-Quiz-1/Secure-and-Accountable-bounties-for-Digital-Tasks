@@ -3,7 +3,7 @@ import TaskListPage from "./TaskListPage";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import TaskDetailPage from "./TaskDetailPage";
 import { Divider } from "semantic-ui-react";
-
+import LoginPage from "./LoginPage";
 
 const HomePage = () => {
     return <div>
@@ -20,8 +20,11 @@ const HomePage = () => {
           </Route>
           <Route path="/tasks/:taskId" component={TaskDetailPage}>
           </Route>
-          <Route path="/">
+          <Route exact path="/">
             <TaskListPage />
+          </Route>
+          <Route path="/login">
+            <LoginPage />
           </Route>
         </Switch>
         </Router>  
