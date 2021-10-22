@@ -5,6 +5,7 @@ import TaskDetailPage from "./TaskDetailPage";
 import { Divider } from "semantic-ui-react";
 import CreateTaskPage from "./CreateTaskPage";
 
+import LoginPage from "./LoginPage";
 
 const HomePage = () => {
     return <div>
@@ -24,8 +25,11 @@ const HomePage = () => {
           </Route>
           <Route path="/tasks/:taskId" component={TaskDetailPage}>
           </Route>
-          <Route path="/">
+          <Route exact path="/">
             <TaskListPage />
+          </Route>
+          <Route path="/login">
+            <LoginPage />
           </Route>
         </Switch>
         </Router>  
