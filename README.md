@@ -1,7 +1,12 @@
 # Secure-and-Accountable-bounties-for-Digital-Tasks
 
-## Setup
+### Setup
 Helps to install all necessary dependencies in all packages
 ```
 yarn setup
+```
+
+### Start Local
+```
+yarn start
 ```
