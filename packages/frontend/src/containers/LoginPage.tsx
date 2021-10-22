@@ -27,7 +27,7 @@ const LoginPage = () => {
       })
       .then((res:any) => {
         console.log(res)
-        if (res.data.status === 201) {
+        if (res.data.id) {
           history.push({
             pathname: "/",
           });
