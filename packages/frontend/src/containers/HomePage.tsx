@@ -3,6 +3,7 @@ import TaskListPage from "./TaskListPage";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import TaskDetailPage from "./TaskDetailPage";
 import { Divider } from "semantic-ui-react";
+import CreateTaskPage from "./CreateTaskPage";
 
 
 const HomePage = () => {
@@ -14,6 +15,9 @@ const HomePage = () => {
         <Switch>
           <Route path="/home">
             <TaskListPage />
+          </Route>
+          <Route path="/createtask">
+            <CreateTaskPage />
           </Route>
           <Route path="/profile">
             <h1>profile page</h1>

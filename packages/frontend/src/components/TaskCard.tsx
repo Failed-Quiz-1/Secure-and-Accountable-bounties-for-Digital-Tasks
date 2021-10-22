@@ -1,18 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card, Icon, Item, Label } from 'semantic-ui-react';
+import Task from '../models/task';
 
-const TaskCard = () => (
+interface TaskCardInterface {
+    task: Task
+}
+
+const TaskCard = (props: TaskCardInterface) => (
     <Item>
         <Item.Content>
-            <Item.Header as='a'>Help to build a new social media app</Item.Header>
+            <Item.Header as='a'>{props.task.name}</Item.Header>
             <Item.Meta>
             <span className='cinema'>Posted 1 hour ago</span>
             </Item.Meta>
-            <Item.Description>I need someone to help to build me another billion dollar app</Item.Description>
+            <Item.Description>{props.task.description}</Item.Description>
             <Item.Extra>
-                <Label>APPROVED</Label>
-                <Link to='tasks/123'>
+                <Label>{props.task.status}</Label>
+                <Link to={`tasks/${props.task.id}`}>
                 <Button primary floated='right'>
                     View Details
                 </Button>
