@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { DraftService } from './draft.service';
 import { CreateDraftDto } from './dto/create-draft.dto';
-import { UpdateDraftDto } from './dto/update-draft.dto';
+import { RejectDraftDto } from './dto/update-draft.dto';
 
 @Controller('draft')
 export class DraftController {
@@ -12,23 +12,19 @@ export class DraftController {
     return this.draftService.create(createDraftDto);
   }
 
-  @Get()
-  findAll() {
-    return this.draftService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.draftService.findOne(+id);
-  }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDraftDto: UpdateDraftDto) {
-    return this.draftService.update(+id, updateDraftDto);
+  update(@Param('id') id: string, @Body() rejectDraftDto: RejectDraftDto) {
+    return this.draftService.update(+id, rejectDraftDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.draftService.remove(+id);
+  @Get('/user/:id')
+  findByUserId(@Param('id') id: string) {
+    return this.draftService.findByUserId(+id);
+  }
+
+  @Get('/task/:id')
+  findByTaskId(@Param('id') id: string) {
+    return this.draftService.findByTaskId(+id);
   }
 }
