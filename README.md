@@ -11,3 +11,8 @@ Start both frontend react app and backend nestjs app
 ```
 yarn start
 ```
+
+## Description
+
+### DB Design
+https://lucid.app/lucidchart/45281327-603d-459a-bf80-9b9565ae9379/edit?viewport_loc=86%2C-177%2C1865%2C946%2C0_0&invitationId=inv_09cd3151-15be-46dd-ba22-d604ece171a9
