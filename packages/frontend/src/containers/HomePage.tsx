@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import TaskDetailPage from "./TaskDetailPage";
 import { Divider } from "semantic-ui-react";
 import LoginPage from "./LoginPage";
-
+import RegisterPage from "./RegisterPage";
 const HomePage = () => {
     return <div>
         <Router>
@@ -25,6 +25,9 @@ const HomePage = () => {
           </Route>
           <Route path="/login">
             <LoginPage />
+          </Route>
+          <Route path="/register">
+            <RegisterPage />
           </Route>
         </Switch>
         </Router>  

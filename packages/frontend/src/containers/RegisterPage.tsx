@@ -2,7 +2,6 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -14,27 +13,26 @@ import { useHistory } from "react-router-dom";
 
 const theme = createTheme();
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const history = useHistory();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     await axios
-      .post("http://localhost:3000/users/login", {
+      .post("http://localhost:3000/users", {
         name: data.get("username"),
         password: data.get("password"),
       })
-      .then((res: any) => {
-        console.log(res);
+      .then((res:any) => {
+        console.log(res)
         if (res.data.id) {
-          localStorage.setItem("userid",res.data.id);
-          //const userid = localStorage.getItem("user");
           history.push({
-            pathname: "/",
+            pathname: "/login",
           });
-        } else {
-          alert("Invalid login credentials!");
+        }else{
+            alert("Username taken!")
         }
+        
       });
   };
 
@@ -42,22 +40,6 @@ const LoginPage = () => {
     <ThemeProvider theme={theme}>
       <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
-        <Grid
-          item
-          xs={false}
-          sm={4}
-          md={7}
-          sx={{
-            backgroundImage: "url(https://source.unsplash.com/random)",
-            backgroundRepeat: "no-repeat",
-            backgroundColor: (t) =>
-              t.palette.mode === "light"
-                ? t.palette.grey[50]
-                : t.palette.grey[900],
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
             sx={{
@@ -70,7 +52,7 @@ const LoginPage = () => {
           >
             <img src={icon} alt="icon" style={{ width: "200px" }} />
             <Typography component="h1" variant="h5">
-              FIVER LOGIN
+              FIVER REGISTRATION
             </Typography>
             <Box
               component="form"
@@ -104,21 +86,30 @@ const LoginPage = () => {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                Register
               </Button>
-              <Grid container>
-                <Grid item>
-                  <Link href="/register" variant="body2">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
-                </Grid>
-              </Grid>
             </Box>
           </Box>
         </Grid>
+        <Grid
+          item
+          xs={false}
+          sm={4}
+          md={7}
+          sx={{
+            backgroundImage: "url(https://source.unsplash.com/random)",
+            backgroundRepeat: "no-repeat",
+            backgroundColor: (t) =>
+              t.palette.mode === "light"
+                ? t.palette.grey[50]
+                : t.palette.grey[900],
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
       </Grid>
     </ThemeProvider>
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
