@@ -7,6 +7,7 @@ yarn setup
 ```
 
 ### Start Local
+Start both frontend react app and backend nestjs app
 ```
 yarn start
 ```
