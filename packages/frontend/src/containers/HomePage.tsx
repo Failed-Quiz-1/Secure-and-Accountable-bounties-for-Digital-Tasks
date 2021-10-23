@@ -8,6 +8,7 @@ import CreateTaskPage from "./CreateTaskPage";
 import LoginPage from "./LoginPage";
 import CreateDraftPage from "./CreateDraftPage";
 
+import RegisterPage from "./RegisterPage";
 const HomePage = () => {
     return <div>
         <Router>
@@ -33,6 +34,9 @@ const HomePage = () => {
           </Route>
           <Route path="/login">
             <LoginPage />
+          </Route>
+          <Route path="/register">
+            <RegisterPage />
           </Route>
         </Switch>
         </Router>  
