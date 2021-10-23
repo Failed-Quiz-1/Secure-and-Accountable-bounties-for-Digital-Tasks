@@ -6,6 +6,7 @@ import { Divider } from "semantic-ui-react";
 import CreateTaskPage from "./CreateTaskPage";
 
 import LoginPage from "./LoginPage";
+import CreateDraftPage from "./CreateDraftPage";
 
 const HomePage = () => {
     return <div>
@@ -19,6 +20,8 @@ const HomePage = () => {
           </Route>
           <Route path="/createtask">
             <CreateTaskPage />
+          </Route>
+          <Route path="/createdraft/:taskId" component={CreateDraftPage}>
           </Route>
           <Route path="/profile">
             <h1>profile page</h1>

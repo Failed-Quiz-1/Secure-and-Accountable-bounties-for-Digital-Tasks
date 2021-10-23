@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Button, Header, Segment, Item, Loader } from "semantic-ui-react"
 import Draft from "../models/draft";
 import DraftCard from "./DraftCard"
@@ -28,6 +29,7 @@ const DraftList = (props: DraftListProps) => {
     return  <div>
         <Header as='h2' block>
             Submitted Drafts
+            <Link to={`/createdraft/${props.taskId}`}><Button color='teal' floated='right'>Submit Draft</Button></Link>
         </Header>
         {loading ? 
             <Loader active>Loading</Loader> :
