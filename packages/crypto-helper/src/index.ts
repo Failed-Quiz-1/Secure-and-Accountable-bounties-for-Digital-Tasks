@@ -29,14 +29,22 @@ export function generatePublicAndPrivateKey(mnemonicString: string): KeyPair {
     }
 }
 
-export function createSignature(message: string, privateKeyStr: string): string {
+export interface SignatureMessage {
+    fromUserId: number,
+    toUserId: number,
+    taskId: number,
+    createdOn: string,
+    status: string
+}
+
+export function createSignature(message: SignatureMessage, privateKeyStr: string): string {
     var privateKey = bitcore.PrivateKey.fromWIF(privateKeyStr);
-    var signature = bitcore.Message(message).sign(privateKey);
+    var signature = bitcore.Message(JSON.stringify(message)).sign(privateKey);
     return signature;
 }
 
-export function verifySignature(message: string, signature: string, publicKeyStr: string): string {
+export function verifySignature(message: SignatureMessage, signature: string, publicKeyStr: string): string {
     var pbk = new bitcore.Address(new bitcore.PublicKey(publicKeyStr));
-    var verified = bitcore.Message(message).verify(pbk, signature);
+    var verified = bitcore.Message(JSON.stringify(message)).verify(pbk, signature);
     return verified;
 }

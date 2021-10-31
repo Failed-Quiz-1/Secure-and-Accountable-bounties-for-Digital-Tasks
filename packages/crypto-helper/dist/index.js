@@ -25,13 +25,13 @@ function generatePublicAndPrivateKey(mnemonicString) {
 exports.generatePublicAndPrivateKey = generatePublicAndPrivateKey;
 function createSignature(message, privateKeyStr) {
     var privateKey = bitcore.PrivateKey.fromWIF(privateKeyStr);
-    var signature = bitcore.Message(message).sign(privateKey);
+    var signature = bitcore.Message(JSON.stringify(message)).sign(privateKey);
     return signature;
 }
 exports.createSignature = createSignature;
 function verifySignature(message, signature, publicKeyStr) {
     var pbk = new bitcore.Address(new bitcore.PublicKey(publicKeyStr));
-    var verified = bitcore.Message(message).verify(pbk, signature);
+    var verified = bitcore.Message(JSON.stringify(message)).verify(pbk, signature);
     return verified;
 }
 exports.verifySignature = verifySignature;
