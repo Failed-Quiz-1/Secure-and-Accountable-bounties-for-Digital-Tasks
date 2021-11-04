@@ -19,6 +19,24 @@ export class TaskService {
     private draftRepository: Repository<Draft>,
   ) {}
 
+  async getCurrDateTime() {
+    const currentdate = new Date();
+    const datetime =
+      'Last Sync: ' +
+      currentdate.getDate() +
+      '/' +
+      (currentdate.getMonth() + 1) +
+      '/' +
+      currentdate.getFullYear() +
+      ' @ ' +
+      currentdate.getHours() +
+      ':' +
+      currentdate.getMinutes() +
+      ':' +
+      currentdate.getSeconds();
+    return datetime;
+  } 
+
   async create(createTaskDto: CreateTaskDto) {
     try {
       const newTask = new Task();
@@ -63,31 +81,62 @@ export class TaskService {
       });
       if (!task)
       throw new NotFoundException("Task not found!");
-      const draft = await this.draftRepository.findOneOrFail({
+      const draft = await this.draftRepository.findOne({
         where: [{ id: approveTaskDto.approved_draftid }],
         relations: ['author','task'],
       });
+      if (!draft)
+      throw new NotFoundException("Draft not found!")
       task.status = "APPROVED";
       //task.payment_signature = approveTaskDto.passphrase;
       task.approval_draft_id = approveTaskDto.approved_draftid;
       const ppk = crypto.generatePublicAndPrivateKey(approveTaskDto.mnemonic);
-      await this.taskRepository.save([task]);
-      return task;
-      return new NotFoundException("Task not found");
+      const newMessage:crypto.SignatureMessage = {
+        fromUserId:task.poster.id,
+        toUserId:draft.author.id,
+        taskId: id,
+        createdOn: await this.getCurrDateTime(),
+        status: 'APPROVED',
+      }
+      task.payment_sig_message = JSON.stringify(newMessage);
+      const payment_signature = crypto.createSignature(newMessage,ppk.privateKey);
+      task.payment_signature = payment_signature
+      const isCorrectMnemonic = crypto.verifySignature(newMessage,payment_signature,ppk.publicKey);
+      if (isCorrectMnemonic){
+        await this.taskRepository.save([task]);
+        return task;
+      }
+      throw new NotFoundException("Incorrect mnemonic string");
   }
 
   async releaseIP (id, approveTaskDto:ApproveTaskDto){
-    try{
       const task = await this.taskRepository.findOneOrFail({
         where: [{ id: id }],
         relations: ['poster'],
       });
+      if (!task)
+      throw new NotFoundException("Task not found!");
       task.status = "COMPLETED";
-      //task.ip_signature = approveTaskDto.passphrase;
-      await this.taskRepository.save([task]);
-      return task;
-    }catch(e){
-      return new NotFoundException("Task not found");
-    }
+      const draft = await this.draftRepository.findOne({
+        where: [{ id: task.approval_draft_id }],
+        relations: ['author','task'],
+      });
+      const ppk = crypto.generatePublicAndPrivateKey(approveTaskDto.mnemonic);
+      const newMessage:crypto.SignatureMessage = {
+        fromUserId:task.poster.id,
+        toUserId:draft.author.id,
+        taskId: id,
+        createdOn: await this.getCurrDateTime(),
+        status: 'COMPLETED',
+      }
+      task.ip_sig_message = JSON.stringify(newMessage);
+      const ip_signature = crypto.createSignature(newMessage,ppk.privateKey);
+      task.ip_signature = ip_signature;
+      const isCorrectMnemonic = crypto.verifySignature(newMessage,ip_signature,ppk.publicKey);
+      if (isCorrectMnemonic){
+        await this.taskRepository.save([task]);
+        return task;
+      }
+      throw new NotFoundException("Incorrect mnemonic string");
   }
 }

@@ -8,7 +8,7 @@ import { Draft } from 'src/draft/entities/draft.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Task,Users, Draft]),
+    TypeOrmModule.forFeature([Task,Users,Draft]),
   ],
   controllers: [TaskController],
   providers: [TaskService]
