@@ -12,7 +12,6 @@ export interface SignatureMessage {
     status: string;
 }
 export interface ServerReleaseSignatureMessage {
-    fromUserId: number;
     ipToUserId: number;
     paymentToUserId: number;
     taskId: number;

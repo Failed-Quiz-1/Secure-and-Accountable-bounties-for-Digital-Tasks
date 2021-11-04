@@ -37,7 +37,6 @@ export interface SignatureMessage {
 }
 
 export interface ServerReleaseSignatureMessage {
-  fromUserId: number;
   ipToUserId: number;
   paymentToUserId: number;
   taskId: number;
