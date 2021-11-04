@@ -4,6 +4,7 @@ import {
   generatePublicAndPrivateKey,
   SignatureMessage,
 } from "crypto-helper";
+import Draft from "../models/draft";
 import Task from "../models/task";
 import { getCurrentDateString, getUserId } from "./util";
 // var Mnemonic = require("crypto-helper/node_modules/bitcore-mnemonic");
@@ -18,6 +19,12 @@ const baseURL = "http://localhost:3000";
 export async function fetchTaskList() {
   var result = await fetch(`${baseURL}/task`);
   var jsonResult: Task[] = await result.json();
+  return jsonResult;
+}
+
+export async function fetchDraftList(taskId: number): Promise<Draft[]> {
+  var result = await fetch(`${baseURL}/draft/task/${taskId}`);
+  var jsonResult: Draft[] = await result.json();
   return jsonResult;
 }
 

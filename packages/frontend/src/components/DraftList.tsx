@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Button, Header, Segment, Item, Loader } from "semantic-ui-react";
 import Draft from "../models/draft";
 import Task from "../models/task";
+import { fetchDraftList } from "../utils/api";
 import DraftCard from "./DraftCard";
 
 interface DraftListProps {
@@ -18,28 +19,24 @@ const DraftList = (props: DraftListProps) => {
     fetchDrafts(props.task.id);
   }, []);
 
-  const fetchDrafts = (taskId: number) => {
+  const fetchDrafts = async (taskId: number) => {
     setLoading(true);
     setDrafts([]);
-    fetch("http://localhost:3000/draft/task/" + taskId.toString())
-      .then((response) => response.json())
-      .then((data: Draft[]) => {
-        console.log(data);
-        if (props.task.approval_draft_id === 0) {
-          setDrafts(data);
-          setLoading(false);
-          return;
-        }
-        var approvedDraft = data.filter(
-          (d) => d.id === props.task.approval_draft_id
-        );
-        var filteredData = data.filter(
-          (d) => d.id !== props.task.approval_draft_id
-        );
-        var finalData: Draft[] = [...approvedDraft, ...filteredData];
-        setDrafts(finalData);
-        setLoading(false);
-      });
+    var data = await fetchDraftList(taskId);
+    if (props.task.approval_draft_id === 0) {
+      setDrafts(data);
+      setLoading(false);
+      return;
+    }
+    var approvedDraft = data.filter(
+      (d) => d.id === props.task.approval_draft_id
+    );
+    var filteredData = data.filter(
+      (d) => d.id !== props.task.approval_draft_id
+    );
+    var finalData: Draft[] = [...approvedDraft, ...filteredData];
+    setDrafts(finalData);
+    setLoading(false);
   };
 
   return (
