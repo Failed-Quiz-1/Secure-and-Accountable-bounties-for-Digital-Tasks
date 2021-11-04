@@ -1,36 +1,39 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Header, Label, Loader, Segment } from 'semantic-ui-react';
-import DraftList from '../components/DraftList';
-import TaskDetail from '../components/TaskDetail';
-import Task from '../models/task';
+import React, { useEffect, useState } from "react";
+import { Button, Header, Label, Loader, Segment } from "semantic-ui-react";
+import DraftList from "../components/DraftList";
+import TaskDetail from "../components/TaskDetail";
+import Task from "../models/task";
+import { fetchTaskDetail } from "../utils/api";
 
 const TaskDetailPage = (props: any) => {
-    const taskId = props.match.params.taskId;
+  const taskId = props.match.params.taskId;
 
-    const [task, setTask] = useState<Task | null>(null);
-    const [loading, setLoading] = useState(false);
+  const [task, setTask] = useState<Task | null>(null);
+  const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        fetchTask(taskId);
-    }, [])
+  useEffect(() => {
+    fetchTask(taskId);
+  }, []);
 
-    const fetchTask = (id: number) => {
-        setLoading(true)
-        setTask(null);
-        fetch('http://localhost:3000/task/' + id.toString())
-            .then(response => response.json())
-            .then((data: Task) => {console.log(data); setTask(data); setLoading(false)});
-    }
+  const fetchTask = async (id: number) => {
+    setLoading(true);
+    setTask(null);
+    var task: Task = await fetchTaskDetail(id);
+    setTask(task);
+    setLoading(false);
+  };
 
-    if (loading || task == null) {
-        return <Loader active>Loading</Loader>
-    }
+  if (loading || task == null) {
+    return <Loader active>Loading</Loader>;
+  }
 
-    return <div>
-        <TaskDetail task={task} />
-        <br />
-        <DraftList taskId={taskId}/>
+  return (
+    <div>
+      <TaskDetail task={task} />
+      <br />
+      <DraftList taskId={taskId} />
     </div>
-}
+  );
+};
 
 export default TaskDetailPage;

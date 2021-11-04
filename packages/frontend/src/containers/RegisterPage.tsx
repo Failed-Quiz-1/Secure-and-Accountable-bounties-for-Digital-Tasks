@@ -10,6 +10,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import icon from "./../assets/icon.png";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import { createUser } from "../utils/api";
 
 const theme = createTheme();
 
@@ -18,22 +19,18 @@ const RegisterPage = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    await axios
-      .post("http://localhost:3000/users", {
-        name: data.get("username"),
-        password: data.get("password"),
-      })
-      .then((res:any) => {
-        console.log(res)
-        if (res.data.id) {
-          history.push({
-            pathname: "/login",
-          });
-        }else{
-            alert("Username taken!")
-        }
-        
+    try {
+      const result: string = await createUser(
+        data.get("username")!.toString(),
+        data.get("password")!.toString()
+      );
+      alert("Please note down your mnemonic passwords: \n\n" + result);
+      history.push({
+        pathname: "/login",
       });
+    } catch (error) {
+      alert("The username already exists");
+    }
   };
 
   return (

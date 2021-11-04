@@ -1,4 +1,5 @@
-import NavBar from "../components/NavBar"
+import React from "react";
+import NavBar from "../components/NavBar";
 import TaskListPage from "./TaskListPage";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import TaskDetailPage from "./TaskDetailPage";
@@ -10,8 +11,9 @@ import CreateDraftPage from "./CreateDraftPage";
 
 import RegisterPage from "./RegisterPage";
 const HomePage = () => {
-    return <div>
-        <Router>
+  return (
+    <div>
+      <Router>
         <NavBar />
         <Divider />
         <br />
@@ -22,13 +24,14 @@ const HomePage = () => {
           <Route path="/createtask">
             <CreateTaskPage />
           </Route>
-          <Route path="/createdraft/:taskId" component={CreateDraftPage}>
-          </Route>
+          <Route
+            path="/createdraft/:taskId"
+            component={CreateDraftPage}
+          ></Route>
           <Route path="/profile">
             <h1>profile page</h1>
           </Route>
-          <Route path="/tasks/:taskId" component={TaskDetailPage}>
-          </Route>
+          <Route path="/tasks/:taskId" component={TaskDetailPage}></Route>
           <Route exact path="/">
             <TaskListPage />
           </Route>
@@ -39,9 +42,9 @@ const HomePage = () => {
             <RegisterPage />
           </Route>
         </Switch>
-        </Router>  
+      </Router>
     </div>
-   
-}
+  );
+};
 
 export default HomePage;

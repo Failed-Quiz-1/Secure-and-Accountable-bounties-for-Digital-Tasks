@@ -11,6 +11,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import icon from "./../assets/icon.png";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import { loginUser } from "../utils/api";
+import { setUserId } from "../utils/util";
 
 const theme = createTheme();
 
@@ -19,23 +21,18 @@ const LoginPage = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    await axios
-      .post("http://localhost:3000/users/login", {
-        name: data.get("username"),
-        password: data.get("password"),
-      })
-      .then((res: any) => {
-        console.log(res);
-        if (res.data.id) {
-          localStorage.setItem("userid",res.data.id);
-          //const userid = localStorage.getItem("user");
-          history.push({
-            pathname: "/",
-          });
-        } else {
-          alert("Invalid login credentials!");
-        }
+    try {
+      const result: number = await loginUser(
+        data.get("username")!.toString(),
+        data.get("password")!.toString()
+      );
+      setUserId(result);
+      history.push({
+        pathname: "/",
       });
+    } catch (error) {
+      alert("Invalid login credentials!");
+    }
   };
 
   return (
