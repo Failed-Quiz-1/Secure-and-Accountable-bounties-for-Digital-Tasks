@@ -83,7 +83,7 @@ export class TaskService {
         relations: ['poster'],
       });
       task.status = "COMPLETED";
-      task.ip_signature = approveTaskDto.passphrase;
+      //task.ip_signature = approveTaskDto.passphrase;
       await this.taskRepository.save([task]);
       return task;
     }catch(e){
