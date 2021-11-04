@@ -6,7 +6,8 @@ import { Repository } from 'typeorm';
 import { CreateDraftDto } from './dto/create-draft.dto';
 import { RejectDraftDto } from './dto/update-draft.dto';
 import { Draft } from './entities/draft.entity';
-
+import * as crypto from 'crypto-helper';
+import { SignatureMessage } from 'crypto-helper';
 @Injectable()
 export class DraftService {
 
@@ -19,14 +20,36 @@ export class DraftService {
     private draftRepository: Repository<Draft>,
   ) {}
   
+  async getCurrDateTime (){
+    const currentdate = new Date(); 
+    const datetime = "Last Sync: " + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " @ "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+    return datetime;
+  }
   async create(createDraftDto: CreateDraftDto) {
     try{
       const newDraft = new Draft();
-      newDraft.draft_signature = createDraftDto.passphrase;
       const user = await this.usersRepository.findOne({id:createDraftDto.userid});
       const task = await this.taskRepository.findOne({id:createDraftDto.taskid});
       newDraft.author = user;
       newDraft.task = task;
+      const ppk = crypto.generatePublicAndPrivateKey(createDraftDto.mnemonic);
+      const posterid = task.poster.id;
+      const newMessage : SignatureMessage = {
+        fromUserId: createDraftDto.userid,
+        toUserId: posterid,
+        taskId: createDraftDto.taskid,
+        createdOn: await this.getCurrDateTime(),
+        status: "POSTED",
+      }
+      const draft_msg = JSON.stringify(newMessage);
+      const draft_signature = crypto.createSignature(newMessage, ppk.privateKey)
+      newDraft.draft_signature = draft_signature;
+      newDraft.draft_sig_message = draft_msg;
       await this.draftRepository.save([newDraft]);
       return newDraft;
     }catch(e){
@@ -40,7 +63,18 @@ export class DraftService {
         where: [{ id: id }],
         relations: ['author','task'],
       });
-      draft.reject_signature = rejectDraftDto.passphrase;
+      const newMessage:SignatureMessage={
+        fromUserId:draft.task.poster.id,
+        toUserId:draft.author.id,
+        taskId:draft.task.id,
+        createdOn: await this.getCurrDateTime(),
+        status: "REJECTED"
+      }
+      const ppk = crypto.generatePublicAndPrivateKey(rejectDraftDto.mnemonic);
+      const reject_msg = JSON.stringify(newMessage);
+      const reject_signature = crypto.createSignature(newMessage, ppk.privateKey)
+      draft.reject_sig_message = reject_msg;
+      draft.reject_signature = reject_signature;
       await this.draftRepository.save([draft]);
       return draft;
     }catch(e){

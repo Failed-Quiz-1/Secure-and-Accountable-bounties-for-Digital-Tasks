@@ -1,3 +1,3 @@
 export class RejectDraftDto {
-    passphrase: string;
+    mnemonic: string;
 }
