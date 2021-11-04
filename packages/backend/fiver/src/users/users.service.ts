@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Users } from './entities/user.entity';
+import * as crypto from 'crypto-helper';
 
 @Injectable()
 export class UsersService {
@@ -19,11 +20,14 @@ export class UsersService {
       });
       return new BadRequestException('Username already exist');
     } catch (error) {
+        const mnemonic = crypto.generateMnemonicString();
+        const privatePubKeyPair = crypto.generatePublicAndPrivateKey(mnemonic);
         const newUser = new Users();
         newUser.name = createUserDto.name;
         newUser.password = createUserDto.password;
+        newUser.public_key = privatePubKeyPair.publicKey;
         await this.usersRepository.save([newUser]);
-        return newUser;
+        return mnemonic;
       
     }
   }
