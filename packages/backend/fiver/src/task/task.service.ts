@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -8,10 +13,10 @@ import { Task } from './entities/task.entity';
 import * as crypto from 'crypto-helper';
 import { Draft } from 'src/draft/entities/draft.entity';
 import { Admin } from 'src/admin/entities/admin.entity';
+import { ConnectableObservable } from 'rxjs';
 
 @Injectable()
 export class TaskService {
-
   constructor(
     @InjectRepository(Users)
     private usersRepository: Repository<Users>,
@@ -21,7 +26,6 @@ export class TaskService {
     private draftRepository: Repository<Draft>,
     @InjectRepository(Admin)
     private adminRepository: Repository<Admin>,
-
   ) {}
 
   async getCurrDateTime() {
@@ -40,14 +44,14 @@ export class TaskService {
       ':' +
       currentdate.getSeconds();
     return datetime;
-  } 
+  }
 
   async create(createTaskDto: CreateTaskDto) {
     try {
       const newTask = new Task();
       newTask.name = createTaskDto.taskname;
       newTask.description = createTaskDto.description;
-      newTask.status = "POSTED";
+      newTask.status = 'POSTED';
       const user = await this.usersRepository.findOneOrFail({
         id: createTaskDto.userid,
       });
@@ -55,8 +59,7 @@ export class TaskService {
       await this.taskRepository.save([newTask]);
       return newTask;
     } catch (error) {
-        return new BadRequestException( error);
-      
+      return new BadRequestException(error);
     }
   }
 
@@ -68,116 +71,133 @@ export class TaskService {
   }
 
   async findOne(id: number) {
-    try{
+    try {
       const task = await this.taskRepository.findOneOrFail({
         where: [{ id: id }],
         relations: ['poster'],
-      })
+      });
       return task;
-    }catch(e){
-      return new NotFoundException("Task not found")
+    } catch (e) {
+      return new NotFoundException('Task not found');
     }
   }
 
   async approve(id: number, approveTaskDto: ApproveTaskDto) {
-      const task = await this.taskRepository.findOne({
-        where: [{ id: id }],
-        relations: ['poster'],
-      });
-      if (!task)
-      throw new NotFoundException("Task not found!");
-      const draft = await this.draftRepository.findOne({
-        where: [{ id: approveTaskDto.approved_draftid }],
-        relations: ['author','task'],
-      });
-      if (!draft)
-      throw new NotFoundException("Draft not found!")
-      task.status = "APPROVED";
-      //task.payment_signature = approveTaskDto.passphrase;
-      task.approval_draft_id = approveTaskDto.approved_draftid;
-      const ppk = crypto.generatePublicAndPrivateKey(approveTaskDto.mnemonic);
-      const newMessage:crypto.SignatureMessage = {
-        fromUserId:task.poster.id,
-        toUserId:draft.author.id,
-        taskId: id,
-        createdOn: await this.getCurrDateTime(),
-        status: 'APPROVED',
-      }
-      task.payment_sig_message = JSON.stringify(newMessage);
-      const payment_signature = crypto.createSignature(newMessage,ppk.privateKey);
-      task.payment_signature = payment_signature
-      const isCorrectMnemonic = crypto.verifySignature(newMessage,payment_signature,ppk.publicKey);
-      if (isCorrectMnemonic){
-        await this.taskRepository.save([task]);
-        return task;
-      }
-      throw new NotFoundException("Incorrect mnemonic string");
+    const task = await this.taskRepository.findOne({
+      where: [{ id: id }],
+      relations: ['poster'],
+    });
+    if (!task) throw new NotFoundException('Task not found!');
+    const draft = await this.draftRepository.findOne({
+      where: [{ id: approveTaskDto.approved_draftid }],
+      relations: ['author', 'task'],
+    });
+    if (!draft) throw new NotFoundException('Draft not found!');
+    task.status = 'APPROVED';
+    //task.payment_signature = approveTaskDto.passphrase;
+    task.approval_draft_id = approveTaskDto.approved_draftid;
+    const ppk = crypto.generatePublicAndPrivateKey(approveTaskDto.mnemonic);
+    if (ppk.publicKey !== task.poster.public_key) {
+      throw new NotFoundException('Incorrect mnemonic string');
+    }
+    const newMessage: crypto.SignatureMessage = {
+      fromUserId: task.poster.id,
+      toUserId: draft.author.id,
+      taskId: id,
+      createdOn: await this.getCurrDateTime(),
+      status: 'APPROVED',
+    };
+    task.payment_sig_message = JSON.stringify(newMessage);
+    const payment_signature = crypto.createSignature(
+      newMessage,
+      ppk.privateKey,
+    );
+    task.payment_signature = payment_signature;
+    const isCorrectMnemonic = crypto.verifySignature(
+      newMessage,
+      payment_signature,
+      ppk.publicKey,
+    );
+    if (isCorrectMnemonic) {
+      await this.taskRepository.save([task]);
+      return task;
+    }
+    throw new NotFoundException('Incorrect mnemonic string');
   }
 
-  async releaseIP (id, approveTaskDto:ApproveTaskDto){
-      const task = await this.taskRepository.findOneOrFail({
-        where: [{ id: id }],
-        relations: ['poster'],
-      });
-      if (!task)
-      throw new NotFoundException("Task not found!");
-      task.status = "COMPLETED";
-      const draft = await this.draftRepository.findOne({
-        where: [{ id: task.approval_draft_id }],
-        relations: ['author','task'],
-      });
-      if(!draft)
-      throw new NotFoundException("Draft not found!");
-      const ppk = crypto.generatePublicAndPrivateKey(approveTaskDto.mnemonic);
-      const newMessage:crypto.SignatureMessage = {
-        fromUserId:task.poster.id,
-        toUserId:draft.author.id,
-        taskId: id,
-        createdOn: await this.getCurrDateTime(),
-        status: 'COMPLETED',
-      }
-      task.ip_sig_message = JSON.stringify(newMessage);
-      const ip_signature = crypto.createSignature(newMessage,ppk.privateKey);
-      task.ip_signature = ip_signature;
-      const isCorrectMnemonic = crypto.verifySignature(newMessage,ip_signature,ppk.publicKey);
-      if (isCorrectMnemonic){
-        await this.taskRepository.save([task]);
-      }else{
-        throw new NotFoundException("Incorrect mnemonic string");
-      }
-      // Release both IP and payment
-      return this.releasePaymentAndIP(id);
+  async releaseIP(id, approveTaskDto: ApproveTaskDto) {
+    const task = await this.taskRepository.findOneOrFail({
+      where: [{ id: id }],
+      relations: ['poster'],
+    });
+    if (!task) throw new NotFoundException('Task not found!');
+    task.status = 'COMPLETED';
+    const draft = await this.draftRepository.findOne({
+      where: [{ id: task.approval_draft_id }],
+      relations: ['author', 'task'],
+    });
+    if (!draft) throw new NotFoundException('Draft not found!');
+    const ppk = crypto.generatePublicAndPrivateKey(approveTaskDto.mnemonic);
+    if (ppk.publicKey !== draft.author.public_key) {
+      throw new NotFoundException('Incorrect mnemonic string');
+    }
+    const newMessage: crypto.SignatureMessage = {
+      fromUserId: task.poster.id,
+      toUserId: draft.author.id,
+      taskId: id,
+      createdOn: await this.getCurrDateTime(),
+      status: 'COMPLETED',
+    };
+    task.ip_sig_message = JSON.stringify(newMessage);
+    const ip_signature = crypto.createSignature(newMessage, ppk.privateKey);
+    task.ip_signature = ip_signature;
+    const isCorrectMnemonic = crypto.verifySignature(
+      newMessage,
+      ip_signature,
+      ppk.publicKey,
+    );
+    if (isCorrectMnemonic) {
+      await this.taskRepository.save([task]);
+    } else {
+      throw new NotFoundException('Incorrect mnemonic string');
+    }
+    // Release both IP and payment
+    console.log('Here');
+    const res = await this.releasePaymentAndIP(id);
+    console.log('There');
+    return res;
   }
 
-  async releasePaymentAndIP (taskid){
+  async releasePaymentAndIP(taskid) {
     const task = await this.taskRepository.findOneOrFail({
       where: [{ id: taskid }],
       relations: ['poster'],
     });
-    if (!task)
-    throw new NotFoundException("Task not found!");
-    task.status = "RELEASED_IP_AND_PAYMENT";
+    if (!task) throw new NotFoundException('Task not found!');
+    task.status = 'RELEASED_IP_AND_PAYMENT';
     const draft = await this.draftRepository.findOne({
       where: [{ id: task.approval_draft_id }],
-      relations: ['author','task'],
+      relations: ['author', 'task'],
     });
-    if(!draft)
-    throw new NotFoundException("Draft not found!");
-    if(!task.ip_signature || !task.payment_signature){
-      throw new InternalServerErrorException("Transaction incomplete!");
+    if (!draft) throw new NotFoundException('Draft not found!');
+    if (!task.ip_signature || !task.payment_signature) {
+      throw new InternalServerErrorException('Transaction incomplete!');
     }
     const admin = await this.adminRepository.find();
-    const newMessage:crypto.ServerReleaseSignatureMessage={
+    const newMessage: crypto.ServerReleaseSignatureMessage = {
       ipToUserId: task.poster.id,
       paymentToUserId: draft.author.id,
       taskId: task.id,
-      createdOn:await this.getCurrDateTime(),
-      status:"RELEASED_IP_AND_PAYMENT"
-    }
+      createdOn: await this.getCurrDateTime(),
+      status: 'RELEASED_IP_AND_PAYMENT',
+    };
     const releaseMsg = JSON.stringify(newMessage);
     task.server_sig_message = releaseMsg;
-    task.server_signature = crypto.createSignature(newMessage,admin[0].private_key);
+    task.server_signature = crypto.createSignature(
+      newMessage,
+      admin[0].private_key,
+    );
+    await this.taskRepository.save([task]);
     return task;
   }
-
 }

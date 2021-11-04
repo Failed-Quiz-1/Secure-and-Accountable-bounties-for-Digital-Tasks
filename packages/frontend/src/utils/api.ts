@@ -60,6 +60,61 @@ export async function createTask(
   }
 }
 
+export async function rejectDraft(draftId: number, mnemonic: string) {
+  try {
+    const body = {
+      mnemonic: mnemonic,
+    };
+    console.log(body);
+    var result = await axios.patch(`${baseURL}/draft/${draftId}`, body);
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error updating draft");
+  }
+}
+
+export async function approveDraft(
+  taskId: number,
+  draftId: number,
+  mnemonic: string
+) {
+  try {
+    const body = {
+      approved_draftid: draftId,
+      mnemonic: mnemonic,
+    };
+    var result = await axios.patch(`${baseURL}/task/approval/${taskId}`, body);
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error updating draft");
+  }
+}
+
+export async function releaseDraftIP(
+  taskId: number,
+  draftId: number,
+  mnemonic: string
+) {
+  try {
+    const body = {
+      approved_draftid: draftId,
+      mnemonic: mnemonic,
+    };
+    console.log("releaseing up");
+    var result = await axios.patch(
+      `${baseURL}/task/release_ip/${taskId}`,
+      body
+    );
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error release ip draft");
+  }
+}
+
 export async function createUser(
   name: string,
   password: string
