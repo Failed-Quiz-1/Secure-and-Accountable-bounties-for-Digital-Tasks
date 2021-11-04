@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Header, Segment, Item, Loader } from "semantic-ui-react";
 import Draft from "../models/draft";
+import Task from "../models/task";
 import DraftCard from "./DraftCard";
 
 interface DraftListProps {
-  taskId: number;
+  task: Task;
 }
 
 const DraftList = (props: DraftListProps) => {
@@ -14,7 +15,7 @@ const DraftList = (props: DraftListProps) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchDrafts(props.taskId);
+    fetchDrafts(props.task.id);
   }, []);
 
   const fetchDrafts = (taskId: number) => {
@@ -24,7 +25,19 @@ const DraftList = (props: DraftListProps) => {
       .then((response) => response.json())
       .then((data: Draft[]) => {
         console.log(data);
-        setDrafts(data);
+        if (props.task.approval_draft_id === 0) {
+          setDrafts(data);
+          setLoading(false);
+          return;
+        }
+        var approvedDraft = data.filter(
+          (d) => d.id === props.task.approval_draft_id
+        );
+        var filteredData = data.filter(
+          (d) => d.id !== props.task.approval_draft_id
+        );
+        var finalData: Draft[] = [...approvedDraft, ...filteredData];
+        setDrafts(finalData);
         setLoading(false);
       });
   };
@@ -33,7 +46,7 @@ const DraftList = (props: DraftListProps) => {
     <div>
       <Header as="h2" block>
         Submitted Drafts
-        <Link to={`/createdraft/${props.taskId}`}>
+        <Link to={`/createdraft/${props.task.id}`}>
           <Button color="teal" floated="right">
             Submit Draft
           </Button>
@@ -47,7 +60,9 @@ const DraftList = (props: DraftListProps) => {
             {drafts.length === 0 ? (
               <p>No drafts have been submitted yet</p>
             ) : (
-              drafts.map((e: Draft) => <DraftCard draft={e} />)
+              drafts.map((e: Draft) => (
+                <DraftCard task={props.task} draft={e} />
+              ))
             )}
           </Item.Group>
         </Segment>

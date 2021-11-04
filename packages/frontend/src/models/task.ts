@@ -6,7 +6,7 @@ export default interface Task {
   description: string;
   poster: User;
   status: string;
-  approval_draft_id: string;
+  approval_draft_id: number;
   payment_signature: string;
   payment_sig_message: string;
   ip_signature: string;

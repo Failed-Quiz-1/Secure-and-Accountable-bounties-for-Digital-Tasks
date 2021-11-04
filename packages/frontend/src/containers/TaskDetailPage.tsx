@@ -32,7 +32,7 @@ const TaskDetailPage = (props: any) => {
     <div>
       <TaskDetail task={task} />
       <br />
-      <DraftList taskId={taskId} />
+      <DraftList task={task} />
     </div>
   );
 };
