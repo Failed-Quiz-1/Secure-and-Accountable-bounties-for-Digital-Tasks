@@ -11,6 +11,14 @@ export interface SignatureMessage {
     createdOn: string;
     status: string;
 }
-export declare function createSignature(message: SignatureMessage, privateKeyStr: string): string;
-export declare function verifySignature(message: SignatureMessage, signature: string, publicKeyStr: string): string;
+export interface ServerReleaseSignatureMessage {
+    fromUserId: number;
+    ipToUserId: number;
+    paymentToUserId: number;
+    taskId: number;
+    createdOn: string;
+    status: string;
+}
+export declare function createSignature(message: SignatureMessage | ServerReleaseSignatureMessage, privateKeyStr: string): string;
+export declare function verifySignature(message: SignatureMessage | ServerReleaseSignatureMessage, signature: string, publicKeyStr: string): string;
 export {};

@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifySignature = exports.createSignature = exports.generatePublicAndPrivateKey = exports.generateMnemonicString = void 0;
-var Mnemonic = require('bitcore-mnemonic');
-var bitcore = require('bitcore-lib');
+var Mnemonic = require("bitcore-mnemonic");
+var bitcore = require("bitcore-lib");
 function generateMnemonicString() {
     var code = new Mnemonic(Mnemonic.Words.ENGLISH);
     return code.toString();
@@ -19,7 +19,7 @@ function generatePublicAndPrivateKey(mnemonicString) {
     var publicKeyStr = publicKey.toString();
     return {
         privateKey: privateKeyStr,
-        publicKey: publicKeyStr
+        publicKey: publicKeyStr,
     };
 }
 exports.generatePublicAndPrivateKey = generatePublicAndPrivateKey;
@@ -31,7 +31,9 @@ function createSignature(message, privateKeyStr) {
 exports.createSignature = createSignature;
 function verifySignature(message, signature, publicKeyStr) {
     var pbk = new bitcore.Address(new bitcore.PublicKey(publicKeyStr));
-    var verified = bitcore.Message(JSON.stringify(message)).verify(pbk, signature);
+    var verified = bitcore
+        .Message(JSON.stringify(message))
+        .verify(pbk, signature);
     return verified;
 }
 exports.verifySignature = verifySignature;
