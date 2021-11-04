@@ -52,30 +52,15 @@ export class DraftService {
     });
     newDraft.author = user;
     newDraft.task = task;
-    const ppk = crypto.generatePublicAndPrivateKey(createDraftDto.mnemonic);
-    const posterid = task.poster.id;
-    const newMessage: SignatureMessage = {
-      fromUserId: createDraftDto.userid,
-      toUserId: posterid,
-      taskId: createDraftDto.taskid,
-      createdOn: await this.getCurrDateTime(),
-      status: 'POSTED',
-    };
-    const draft_msg = JSON.stringify(newMessage);
-    const draft_signature = crypto.createSignature(newMessage, ppk.privateKey);
-    newDraft.draft_signature = draft_signature;
+    const draft_msg = JSON.parse(createDraftDto.signatureMessage);
+    const isCorrectMnemonic = crypto.verifySignature(draft_msg,createDraftDto.signature,user.public_key);
+    newDraft.draft_signature = createDraftDto.signature;
     newDraft.draft_sig_message = draft_msg;
-
-    const isCorrectMnemonic = crypto.verifySignature(
-      newMessage,
-      draft_signature,
-      ppk.publicKey,
-    );
     if (isCorrectMnemonic) {
       await this.draftRepository.save([newDraft]);
       return newDraft;
     }
-    throw new BadRequestException('Incorrect mnemonic string!');
+    throw new BadRequestException('Incorrect message!');
   }
 
   async update(id: number, rejectDraftDto: RejectDraftDto) {
@@ -83,28 +68,15 @@ export class DraftService {
       where: [{ id: id }],
       relations: ['author', 'task'],
     });
-    const newMessage: SignatureMessage = {
-      fromUserId: draft.task.poster.id,
-      toUserId: draft.author.id,
-      taskId: draft.task.id,
-      createdOn: await this.getCurrDateTime(),
-      status: 'REJECTED',
-    };
-    const ppk = crypto.generatePublicAndPrivateKey(rejectDraftDto.mnemonic);
-    const reject_msg = JSON.stringify(newMessage);
-    const reject_signature = crypto.createSignature(newMessage, ppk.privateKey);
+    const reject_msg = JSON.parse(rejectDraftDto.signatureMessage);
+    const isCorrectMnemonic = crypto.verifySignature(reject_msg,rejectDraftDto.signature,draft.author.public_key);
     draft.reject_sig_message = reject_msg;
-    draft.reject_signature = reject_signature;
-    const isCorrectMnemonic = crypto.verifySignature(
-      newMessage,
-      reject_signature,
-      ppk.publicKey,
-    );
+    draft.reject_signature = rejectDraftDto.signature;
     if (isCorrectMnemonic) {
       await this.draftRepository.save([draft]);
       return draft;
     }
-    throw new BadRequestException('Incorrect mnemonic string!');
+    throw new BadRequestException('Incorrect message!');
   }
 
   async findByTaskId(taskid: number) {
