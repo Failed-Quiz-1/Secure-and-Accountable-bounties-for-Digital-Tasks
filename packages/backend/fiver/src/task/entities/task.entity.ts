@@ -26,5 +26,17 @@ export class Task{
 
   @Column({ default: "" })
   ip_signature: string;
+
+  @Column({ default: "" })
+  payment_sig_message: string;
+
+  @Column({ default: "" })
+  ip_sig_message: string;
+
+  @Column({ default: "" })
+  server_signature: string;
+
+  @Column({ default: "" })
+  server_sig_message: string;
 }
 

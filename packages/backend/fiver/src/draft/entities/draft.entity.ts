@@ -19,6 +19,12 @@ export class Draft {
   @Column({default:""})
   reject_signature: string;
 
+  @Column({default:""})
+  draft_sig_message: string;
+
+  @Column({default:""})
+  reject_sig_message: string;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdOn: Date;
 }
