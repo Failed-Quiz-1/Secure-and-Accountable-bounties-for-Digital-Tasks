@@ -60,6 +60,20 @@ export async function createTask(
   }
 }
 
+export async function rejectDraft(draftId: number, mnemonic: string) {
+  try {
+    const body = {
+      mnemonic: mnemonic,
+    };
+    console.log(body);
+    var result = await axios.patch(`${baseURL}/draft/${draftId}`, body);
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error updating draft");
+  }
+}
+
 export async function createUser(
   name: string,
   password: string

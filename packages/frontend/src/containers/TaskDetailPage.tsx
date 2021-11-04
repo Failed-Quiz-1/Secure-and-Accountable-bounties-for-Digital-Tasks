@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Header, Label, Loader, Segment } from "semantic-ui-react";
 import DraftList from "../components/DraftList";
+import MnemonicModal from "../components/MnemonicModal";
 import TaskDetail from "../components/TaskDetail";
 import Task from "../models/task";
 import { fetchTaskDetail } from "../utils/api";
