@@ -29,33 +29,13 @@ export async function fetchTaskDetail(taskId: number): Promise<Task> {
 
 export async function createDraft(taskId: number, mnemonic: string) {
   try {
-    var task: Task = await fetchTaskDetail(taskId);
-    const signatureMessage: SignatureMessage = {
-      fromUserId: getUserId(),
-      toUserId: task.poster.id,
-      status: task.status,
-      taskId: taskId,
-      createdOn: getCurrentDateString(),
+    const body = {
+      userid: getUserId(),
+      taskid: taskId,
+      mnemonic: mnemonic,
     };
-    // console.log(signatureMessage);
-    // console.log(JSON.stringify(signatureMessage));
-    // console.log(mnemonic);
-    // const ppk = generatePublicAndPrivateKey(mnemonic);
-    // // var privateKey = bitcore.PrivateKey.fromWIF(ppk.privateKey);
-    // console.log(ppk);
-    // // var signature = bitcore.Message("skfdis").sign(privateKey);
-    // const signature = createSignature(signatureMessage, ppk.privateKey);
-    // console.log(signature);
-    // const body = {
-    //   userid: getUserId(),
-    //   taskid: taskId,
-    //   signature: signature,
-    //   signatureMessage: signatureMessage,
-    // };
-    // console.log(body);
-    // var result = "";
-    // // var result = await axios.post(`${baseURL}/draft`, body);
-    // return result;
+    var result = await axios.post(`${baseURL}/draft`, body);
+    return result;
   } catch (error) {
     console.log(error);
     // throw new Error(error);
