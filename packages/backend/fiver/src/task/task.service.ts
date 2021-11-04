@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -7,6 +7,8 @@ import { ApproveTaskDto } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
 import * as crypto from 'crypto-helper';
 import { Draft } from 'src/draft/entities/draft.entity';
+import { Admin } from 'src/admin/entities/admin.entity';
+
 @Injectable()
 export class TaskService {
 
@@ -17,6 +19,9 @@ export class TaskService {
     private taskRepository: Repository<Task>,
     @InjectRepository(Draft)
     private draftRepository: Repository<Draft>,
+    @InjectRepository(Admin)
+    private adminRepository: Repository<Admin>,
+
   ) {}
 
   async getCurrDateTime() {
@@ -121,6 +126,8 @@ export class TaskService {
         where: [{ id: task.approval_draft_id }],
         relations: ['author','task'],
       });
+      if(!draft)
+      throw new NotFoundException("Draft not found!");
       const ppk = crypto.generatePublicAndPrivateKey(approveTaskDto.mnemonic);
       const newMessage:crypto.SignatureMessage = {
         fromUserId:task.poster.id,
@@ -135,8 +142,42 @@ export class TaskService {
       const isCorrectMnemonic = crypto.verifySignature(newMessage,ip_signature,ppk.publicKey);
       if (isCorrectMnemonic){
         await this.taskRepository.save([task]);
-        return task;
+      }else{
+        throw new NotFoundException("Incorrect mnemonic string");
       }
-      throw new NotFoundException("Incorrect mnemonic string");
+      // Release both IP and payment
+      return this.releasePaymentAndIP(id);
   }
+
+  async releasePaymentAndIP (taskid){
+    const task = await this.taskRepository.findOneOrFail({
+      where: [{ id: taskid }],
+      relations: ['poster'],
+    });
+    if (!task)
+    throw new NotFoundException("Task not found!");
+    task.status = "RELEASED_IP_AND_PAYMENT";
+    const draft = await this.draftRepository.findOne({
+      where: [{ id: task.approval_draft_id }],
+      relations: ['author','task'],
+    });
+    if(!draft)
+    throw new NotFoundException("Draft not found!");
+    if(!task.ip_signature || !task.payment_signature){
+      throw new InternalServerErrorException("Transaction incomplete!");
+    }
+    const admin = await this.adminRepository.find();
+    const newMessage:crypto.ServerReleaseSignatureMessage={
+      ipToUserId: task.poster.id,
+      paymentToUserId: draft.author.id,
+      taskId: task.id,
+      createdOn:await this.getCurrDateTime(),
+      status:"RELEASED_IP_AND_PAYMENT"
+    }
+    const releaseMsg = JSON.stringify(newMessage);
+    task.server_sig_message = releaseMsg;
+    task.server_signature = crypto.createSignature(newMessage,admin[0].private_key);
+    return task;
+  }
+
 }

@@ -1,3 +1,4 @@
 export class RejectDraftDto {
-    mnemonic: string;
+    signature: string;
+    signatureMessage:string;
 }
