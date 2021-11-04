@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -8,31 +8,54 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import icon from "./../assets/icon.png";
-import axios from "axios";
+import Modal from "react-modal";
 import { useHistory } from "react-router-dom";
 import { createUser } from "../utils/api";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 const theme = createTheme();
 
 const RegisterPage = () => {
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [mnemonic, setMnemonic] = useState("");
   const history = useHistory();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     const data = new FormData(event.currentTarget);
     try {
       const result: string = await createUser(
         data.get("username")!.toString(),
         data.get("password")!.toString()
       );
-      alert("Please note down your mnemonic passwords: \n\n" + result);
-      history.push({
-        pathname: "/login",
-      });
+      setMnemonic(result);
+      setIsOpen(true);
+      //alert("Please note down your mnemonic passwords: \n\n" + result);
+      //history.push({
+      //  pathname: "/login",
+      //});
     } catch (error) {
-      alert("The username already exists");
+      alert("The username already exists" + error);
     }
   };
 
+  const navigateAway = () => {
+    setIsOpen(false);
+    history.push({
+      pathname: "/login",
+    });
+  };
+
+  const customStyles = {
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+    },
+  };
   return (
     <ThemeProvider theme={theme}>
       <Grid container component="main" sx={{ height: "100vh" }}>
@@ -105,6 +128,36 @@ const RegisterPage = () => {
           }}
         />
       </Grid>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => {
+          setIsOpen(false);
+        }}
+        style={customStyles}
+      >
+        <h2>Please note down your mnemonic password</h2>
+        <p>{mnemonic}</p>
+        <CopyToClipboard text={mnemonic}>
+          <div>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              onClick={()=>{alert('Copied!')}}            >
+              Copy to clipboard
+            </Button>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 1, mb: 2 }}
+              onClick={navigateAway}
+            >
+              Close
+            </Button>
+          </div>
+        </CopyToClipboard>
+      </Modal>
     </ThemeProvider>
   );
 };
