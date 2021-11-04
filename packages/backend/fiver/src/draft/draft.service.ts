@@ -83,14 +83,21 @@ export class DraftService {
       where: [{ id: id }],
       relations: ['author', 'task'],
     });
+    const task = await this.taskRepository.findOneOrFail({
+      where: [{ id: draft.task.id }],
+      relations: ['poster'],
+    });
     const newMessage: SignatureMessage = {
-      fromUserId: draft.task.poster.id,
+      fromUserId: task.poster.id,
       toUserId: draft.author.id,
       taskId: draft.task.id,
       createdOn: await this.getCurrDateTime(),
       status: 'REJECTED',
     };
     const ppk = crypto.generatePublicAndPrivateKey(rejectDraftDto.mnemonic);
+    if (ppk.publicKey !== task.poster.public_key) {
+      throw new BadRequestException('Incorrect mnemonic string!');
+    }
     const reject_msg = JSON.stringify(newMessage);
     const reject_signature = crypto.createSignature(newMessage, ppk.privateKey);
     draft.reject_sig_message = reject_msg;
