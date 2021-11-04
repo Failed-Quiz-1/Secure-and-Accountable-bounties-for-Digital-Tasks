@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from 'src/task/entities/task.entity';
 import { Users } from 'src/users/entities/user.entity';
@@ -31,7 +31,6 @@ export class DraftService {
     return datetime;
   }
   async create(createDraftDto: CreateDraftDto) {
-    try{
       const newDraft = new Draft();
       const user = await this.usersRepository.findOne({id:createDraftDto.userid});
       const task = await this.taskRepository.findOne({id:createDraftDto.taskid});
@@ -50,15 +49,16 @@ export class DraftService {
       const draft_signature = crypto.createSignature(newMessage, ppk.privateKey)
       newDraft.draft_signature = draft_signature;
       newDraft.draft_sig_message = draft_msg;
-      await this.draftRepository.save([newDraft]);
-      return newDraft;
-    }catch(e){
-      return new InternalServerErrorException(e);
-    }
+
+      const isCorrectMnemonic = crypto.verifySignature(newMessage,draft_signature,ppk.publicKey);
+      if (isCorrectMnemonic){
+        await this.draftRepository.save([newDraft]);
+        return newDraft;
+      }
+      throw new BadRequestException("Incorrect mnemonic string!")
   }
 
   async update(id: number, rejectDraftDto: RejectDraftDto) {
-    try{
       const draft = await this.draftRepository.findOneOrFail({
         where: [{ id: id }],
         relations: ['author','task'],
@@ -75,11 +75,12 @@ export class DraftService {
       const reject_signature = crypto.createSignature(newMessage, ppk.privateKey)
       draft.reject_sig_message = reject_msg;
       draft.reject_signature = reject_signature;
-      await this.draftRepository.save([draft]);
-      return draft;
-    }catch(e){
-      return new NotFoundException("Draft not found");
-    }
+      const isCorrectMnemonic = crypto.verifySignature(newMessage,reject_signature,ppk.publicKey);
+      if (isCorrectMnemonic){
+        await this.draftRepository.save([draft]);
+        return draft;
+      }
+      throw new BadRequestException("Incorrect mnemonic string!")
   }
 
   async findByTaskId(taskid: number){

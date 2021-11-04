@@ -5,7 +5,8 @@ import { Repository } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { ApproveTaskDto } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
-
+import * as crypto from 'crypto-helper';
+import { Draft } from 'src/draft/entities/draft.entity';
 @Injectable()
 export class TaskService {
 
@@ -14,6 +15,8 @@ export class TaskService {
     private usersRepository: Repository<Users>,
     @InjectRepository(Task)
     private taskRepository: Repository<Task>,
+    @InjectRepository(Draft)
+    private draftRepository: Repository<Draft>,
   ) {}
 
   async create(createTaskDto: CreateTaskDto) {
@@ -54,19 +57,23 @@ export class TaskService {
   }
 
   async approve(id: number, approveTaskDto: ApproveTaskDto) {
-    try{
-      const task = await this.taskRepository.findOneOrFail({
+      const task = await this.taskRepository.findOne({
         where: [{ id: id }],
         relations: ['poster'],
       });
+      if (!task)
+      throw new NotFoundException("Task not found!");
+      const draft = await this.draftRepository.findOneOrFail({
+        where: [{ id: approveTaskDto.approved_draftid }],
+        relations: ['author','task'],
+      });
       task.status = "APPROVED";
-      task.payment_signature = approveTaskDto.passphrase;
+      //task.payment_signature = approveTaskDto.passphrase;
       task.approval_draft_id = approveTaskDto.approved_draftid;
+      const ppk = crypto.generatePublicAndPrivateKey(approveTaskDto.mnemonic);
       await this.taskRepository.save([task]);
       return task;
-    }catch(e){
       return new NotFoundException("Task not found");
-    }
   }
 
   async releaseIP (id, approveTaskDto:ApproveTaskDto){
