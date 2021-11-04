@@ -58,6 +58,7 @@ const RegisterPage = () => {
   };
   return (
     <ThemeProvider theme={theme}>
+      
       <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>

@@ -1,40 +1,46 @@
-import React, { Component, useState } from 'react'
-import { Link } from 'react-router-dom';
-import { Input, Menu } from 'semantic-ui-react'
+import React, { Component, useState } from "react";
+import { Link } from "react-router-dom";
+import { Input, Menu } from "semantic-ui-react";
+import { getUserId } from "./../utils/util";
+import { useHistory } from "react-router";
+import { getListItemAvatarUtilityClass } from "@mui/material";
 
 const NavBar = () => {
-
-    const [activeItem, setactiveItem] = useState('home');
-
-    return (
-        <Menu secondary>
-        <Link to="/home">
-            <Menu.Item
-                name='home'
-                active={activeItem === 'home'}
-                onClick={() => setactiveItem('home')}
-            />
-        </Link>
-        <Link to="/profile">
+  const history = useHistory();
+  const [activeItem, setactiveItem] = useState("home");
+  const [isLoggedIn, setIsLoggedIn] = useState(!isNaN(getUserId()));
+  return (
+    <Menu secondary>
+      <Link to="/home">
         <Menu.Item
-            name='Profile'
-            active={activeItem === 'profile'}
-            onClick={() => setactiveItem('profile')}
+          name="home"
+          active={activeItem === "home"}
+          onClick={() => setactiveItem("home")}
         />
-        </Link>
-        <Menu.Menu position='right'>
-            <Menu.Item>
-            <Input icon='search' placeholder='Search...' />
-            </Menu.Item>
-            <Menu.Item
-            name='logout'
-            active={activeItem === 'logout'}
-            onClick={() => setactiveItem('logout')}
-            />
-        </Menu.Menu>
-        </Menu>
-    )
-  
-}
+      </Link>
+      <Link to="/profile">
+        <Menu.Item
+          name="Profile"
+          active={activeItem === "profile"}
+          onClick={() => setactiveItem("profile")}
+        />
+      </Link>
+      <Menu.Menu position="right">
+        <Menu.Item>
+          <Input icon="search" placeholder="Search..." />
+        </Menu.Item>
+        <Menu.Item
+          name={isLoggedIn ? "Logout" : "Login"}
+          active={activeItem === "logout"}
+          onClick={() => {
+            setIsLoggedIn(false);
+            if (!isNaN(getUserId())) localStorage.removeItem("userid");
+            history.push("/login");
+          }}
+        />
+      </Menu.Menu>
+    </Menu>
+  );
+};
 
 export default NavBar;

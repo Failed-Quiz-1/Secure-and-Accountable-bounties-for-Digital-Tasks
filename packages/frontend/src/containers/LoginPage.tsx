@@ -27,9 +27,11 @@ const LoginPage = () => {
         data.get("password")!.toString()
       );
       setUserId(result);
+      
       history.push({
         pathname: "/",
       });
+      window.location.reload();
     } catch (error) {
       alert("Invalid login credentials!");
     }
