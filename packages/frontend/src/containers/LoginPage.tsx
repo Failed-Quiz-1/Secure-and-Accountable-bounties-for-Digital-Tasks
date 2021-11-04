@@ -12,7 +12,7 @@ import icon from "./../assets/icon.png";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { loginUser } from "../utils/api";
-import { setUserId } from "../utils/util";
+import { setUser } from "../utils/util";
 
 const theme = createTheme();
 
@@ -26,8 +26,8 @@ const LoginPage = () => {
         data.get("username")!.toString(),
         data.get("password")!.toString()
       );
-      setUserId(result);
-      
+      setUser(result, data.get("username")!.toString());
+
       history.push({
         pathname: "/",
       });

@@ -162,9 +162,7 @@ export class TaskService {
       throw new NotFoundException('Incorrect mnemonic string');
     }
     // Release both IP and payment
-    console.log('Here');
     const res = await this.releasePaymentAndIP(id);
-    console.log('There');
     return res;
   }
 

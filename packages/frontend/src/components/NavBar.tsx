@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import { Link } from "react-router-dom";
-import { Input, Menu } from "semantic-ui-react";
-import { getUserId } from "./../utils/util";
+import { Button, Input, Menu } from "semantic-ui-react";
+import { getUserId, getUsername, removeUser } from "./../utils/util";
 import { useHistory } from "react-router";
 import { getListItemAvatarUtilityClass } from "@mui/material";
 
@@ -27,14 +27,18 @@ const NavBar = () => {
       </Link>
       <Menu.Menu position="right">
         <Menu.Item>
-          <Input icon="search" placeholder="Search..." />
+          {!isNaN(getUserId()) && (
+            <Button floated="right" basic color="green">
+              {getUsername()}
+            </Button>
+          )}
         </Menu.Item>
         <Menu.Item
           name={isLoggedIn ? "Logout" : "Login"}
           active={activeItem === "logout"}
           onClick={() => {
             setIsLoggedIn(false);
-            if (!isNaN(getUserId())) localStorage.removeItem("userid");
+            if (!isNaN(getUserId())) removeUser();
             history.push("/login");
           }}
         />

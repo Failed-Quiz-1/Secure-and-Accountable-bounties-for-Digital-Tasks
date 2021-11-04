@@ -3,8 +3,19 @@ export function getUserId(): number {
   return userid;
 }
 
-export function setUserId(userid: number) {
+export function getUsername(): string {
+  const username = localStorage.getItem("username")!;
+  return username;
+}
+
+export function setUser(userid: number, username: string) {
   localStorage.setItem("userid", userid.toString());
+  localStorage.setItem("username", username.toString());
+}
+
+export function removeUser() {
+  localStorage.removeItem("userid");
+  localStorage.removeItem("username");
 }
 
 export function getCurrentDateString() {
