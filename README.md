@@ -17,6 +17,9 @@ yarn start
 docker run -p 3000:3000 -p 5000:5000 --env REACT_APP_API_URL=http://localhost:3000 -d sweesenkoh/failedquiz1_fiver_app:latest
 ```
 
+### Docker setup in digital ocean
+https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04
+
 ### Docker Setup
 To build
 ```
