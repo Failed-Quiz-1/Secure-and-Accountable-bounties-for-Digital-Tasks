@@ -23,12 +23,13 @@
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1",
     "crypto-helper": "^1.0.0",
-    "react-copy-to-clipboard":"^5.0.4",
-    "react-modal":"^3.14.3"
+    "react-copy-to-clipboard": "^5.0.4",
+    "react-modal": "^3.14.3"
   },
   "scripts": {
     "start": "react-scripts start",
     "start:dev": "react-scripts start",
+    "start:prod": "serve -s build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -53,7 +54,7 @@
   },
   "devDependencies": {
     "@types/react-router-dom": "^5.3.1",
-    "@types/react-modal":"^3.13.1",
-    "@types/react-copy-to-clipboard":"^4.3.0"
+    "@types/react-modal": "^3.13.1",
+    "@types/react-copy-to-clipboard": "^4.3.0"
   }
 }
