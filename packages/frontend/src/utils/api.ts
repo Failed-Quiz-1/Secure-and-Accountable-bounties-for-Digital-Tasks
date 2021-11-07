@@ -14,7 +14,7 @@ import { getCurrentDateString, getUserId } from "./util";
 
 // sweesen100:123
 // ethics differ achieve tip door can length service negative either ignore tonight
-const baseURL = "http://localhost:3000";
+const baseURL = process.env.REACT_APP_API_URL;
 
 export async function fetchTaskList() {
   var result = await fetch(`${baseURL}/task`);
