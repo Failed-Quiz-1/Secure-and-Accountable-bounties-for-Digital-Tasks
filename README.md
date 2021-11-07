@@ -1,5 +1,7 @@
 # Secure-and-Accountable-bounties-for-Digital-Tasks
 
+![workflow status](https://github.com/Failed-Quiz-1/Secure-and-Accountable-bounties-for-Digital-Tasks/actions/workflows/docker-image.yml/badge.svg)
+
 ### Setup
 Helps to install all necessary dependencies in all packages
 ```
