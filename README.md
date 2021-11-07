@@ -12,6 +12,11 @@ Start both frontend react app and backend nestjs app
 yarn start
 ```
 
+### To run straight from a published Docker image
+```
+docker run -p 3000:3000 -p 5000:5000 --env REACT_APP_API_URL=http://localhost:3000 -d sweesenkoh/failedquiz1_fiver_app:latest
+```
+
 ### Docker Setup
 To build
 ```
@@ -29,6 +34,11 @@ To load the exported zip and run
 ```
 docker load < failedquiz1_latest.tar.gz 
 docker run -p 3000:3000 -p 5000:5000 --env REACT_APP_API_URL=http://localhost:3000 -d failedquiz1/crypto-app
+```
+To push to remote registry (to your own account)
+```
+docker tag local-image:tagname new-repo:tagname
+docker push new-repo:tagname
 ```
 
 
