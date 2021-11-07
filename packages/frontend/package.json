@@ -31,7 +31,7 @@
     "start": "react-scripts start",
     "start:dev": "react-scripts start",
     "start:prod": "yarn serve -s build",
-    "build": "react-scripts build",
+    "build": "react-scripts build  --production",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
