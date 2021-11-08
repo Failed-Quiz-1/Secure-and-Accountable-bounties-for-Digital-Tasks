@@ -2,64 +2,25 @@
 
 ![workflow status](https://github.com/Failed-Quiz-1/Secure-and-Accountable-bounties-for-Digital-Tasks/actions/workflows/docker-image.yml/badge.svg)
 
-### Setup
+## Run the app locally
 
-Helps to install all necessary dependencies in all packages
-
-```
-yarn setup
-```
-
-### Start Local
-
-Start both frontend react app and backend nestjs app
-
-```
-yarn start
-```
-
-### To run straight from a published Docker image
-
+### With Docker
 ```
 docker run -p 3000:3000 -p 5000:5000 -d sweesenkoh/failedquiz1_fiver_app:latest
 ```
 
-### Docker setup in digital ocean
+or
 
-https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04
 
-### Docker Setup
+### Manual setup
 
-To build
-
+Install all dependencies
 ```
-docker build . -t failedquiz1/crypto-app
+yarn setup
 ```
-
-To run (configure api url to server url)
-
+Start both frontend and backend
 ```
-docker run -p 3000:3000 -p 5000:5000 --env REACT_APP_API_URL=http://localhost:3000 -d failedquiz1/crypto-app
-```
-
-To export image as zip
-
-```
-docker save failedquiz1/crypto-app | gzip > failedquiz1_latest.tar.gz
-```
-
-To load the exported zip and run
-
-```
-docker load < failedquiz1_latest.tar.gz
-docker run -p 3000:3000 -p 5000:5000 --env REACT_APP_API_URL=http://localhost:3000 -d failedquiz1/crypto-app
-```
-
-To push to remote registry (to your own account)
-
-```
-docker tag local-image:tagname new-repo:tagname
-docker push new-repo:tagname
+yarn start
 ```
 
 ## Description
