@@ -29,7 +29,7 @@ const LoginPage = () => {
       setUser(result, data.get("username")!.toString());
 
       history.push({
-        pathname: "/home",
+        pathname: "/",
       });
       window.location.reload();
     } catch (error) {
