@@ -15,7 +15,7 @@ export class Task{
   @Column()
   description: string;
 
-  @Column()
+  @Column({default:0})
   price: number;
   
   @Column()

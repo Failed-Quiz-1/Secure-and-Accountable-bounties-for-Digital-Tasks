@@ -6,10 +6,11 @@ import { Task } from './entities/task.entity';
 import { Users } from 'src/users/entities/user.entity';
 import { Draft } from 'src/draft/entities/draft.entity';
 import { Admin } from 'src/admin/entities/admin.entity';
+import { Job } from 'src/job/entities/job.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Task,Users,Draft,Admin]),
+    TypeOrmModule.forFeature([Task,Users,Draft,Admin,Job]),
   ],
   controllers: [TaskController],
   providers: [TaskService]
