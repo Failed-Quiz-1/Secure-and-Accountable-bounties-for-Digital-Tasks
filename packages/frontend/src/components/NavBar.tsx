@@ -11,7 +11,7 @@ const NavBar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!isNaN(getUserId()));
   return (
     <Menu secondary>
-      <Link to="/home">
+      <Link to="/">
         <Menu.Item
           name="home"
           active={activeItem === "home"}

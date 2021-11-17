@@ -6,7 +6,7 @@ import {
 } from "crypto-helper";
 import Draft from "../models/draft";
 import Task from "../models/task";
-import { getCurrentDateString, getUserId } from "./util";
+import { getUserId } from "./util";
 // var Mnemonic = require("crypto-helper/node_modules/bitcore-mnemonic");
 // var bitcore = require("crypto-helper/node_modules/bitcore-lib");
 //sweesen99:123
