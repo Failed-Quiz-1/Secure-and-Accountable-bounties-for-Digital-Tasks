@@ -34,7 +34,6 @@ const TaskDetail = (props: TaskDetailProp) => {
         </div>
         <br />
         <br />
-        <p>Poster id: {task.poster.id}</p>
         <p>Approval draft id: {task.approval_draft_id}</p>
         <p>Payment signature message: {task.payment_sig_message}</p>
         <p>Payment signature: {task.payment_signature}</p>

@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Card, Header, Icon, Loader } from "semantic-ui-react";
+import {
+  Button,
+  Card,
+  Header,
+  Icon,
+  Loader,
+  Segment,
+  Step,
+} from "semantic-ui-react";
 import TaskList from "../components/TaskList";
 import Task from "../models/task";
 import { fetchTaskList } from "../utils/api";
 
-const TaskListPage = () => {
+const TaskListPage = (props: any) => {
+  const jobId = props.match.params.jobId;
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -23,9 +32,10 @@ const TaskListPage = () => {
 
   return (
     <div>
+      <Segment attached></Segment>
       <Header as="h2" block>
-        Tasks Postings
-        <Link to="/createtask">
+        Tasks for Job Id: {jobId}
+        <Link to={`/createtask/${jobId}`}>
           <Button floated="right" color="teal">
             Create Task
           </Button>
