@@ -17,3 +17,10 @@ export function removeUser() {
   localStorage.removeItem("userid");
   localStorage.removeItem("username");
 }
+
+export function chunk(arr: any, chunkSize: any): any {
+  var R = [];
+  for (var i = 0, len = arr.length; i < len; i += chunkSize)
+    R.push(arr.slice(i, i + chunkSize));
+  return R;
+}

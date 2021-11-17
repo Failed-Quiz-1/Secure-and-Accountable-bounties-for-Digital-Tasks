@@ -4,7 +4,6 @@ export default interface Task {
   id: number;
   name: string;
   description: string;
-  poster: User;
   status: string;
   approval_draft_id: number;
   payment_signature: string;
@@ -13,4 +12,5 @@ export default interface Task {
   ip_sig_message: string;
   server_signature: string;
   server_sig_message: string;
+  step: number;
 }

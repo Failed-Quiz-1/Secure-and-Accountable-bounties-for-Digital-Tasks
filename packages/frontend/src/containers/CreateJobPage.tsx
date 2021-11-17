@@ -2,14 +2,12 @@ import React from "react";
 import { useState } from "react";
 import { useHistory } from "react-router";
 import { Button, Form, Header, Loader } from "semantic-ui-react";
-import { createTask } from "../utils/api";
+import { createJob, createTask } from "../utils/api";
 import { getUserId } from "../utils/util";
 
-const CreateTaskPage = (props: any) => {
-  const jobId = props.match.params.jobId;
-
+const CreateJobPage = () => {
   const [description, setDescription] = useState("");
-  const [taskName, setTaskName] = useState("");
+  const [jobName, setJobName] = useState("");
   const [loading, setLoading] = useState(false);
 
   let history = useHistory();
@@ -17,7 +15,7 @@ const CreateTaskPage = (props: any) => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      await createTask(getUserId(), taskName, description);
+      await createJob(getUserId(), jobName, description);
       setLoading(false);
       history.goBack();
     } catch (error) {
@@ -29,17 +27,17 @@ const CreateTaskPage = (props: any) => {
   return (
     <div>
       <Header as="h2" block>
-        Post a new task
+        Post a new job
       </Header>
       {loading ? (
         <Loader active>Submitting...</Loader>
       ) : (
         <Form>
           <Form.Field>
-            <label>Task Name</label>
+            <label>Job Name</label>
             <input
               placeholder="Task Name"
-              onChange={(e) => setTaskName(e.target.value)}
+              onChange={(e) => setJobName(e.target.value)}
             />
           </Form.Field>
           <Form.Field>
@@ -58,4 +56,4 @@ const CreateTaskPage = (props: any) => {
   );
 };
 
-export default CreateTaskPage;
+export default CreateJobPage;
