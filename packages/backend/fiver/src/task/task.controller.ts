@@ -22,6 +22,11 @@ export class TaskController {
     return this.taskService.findOne(+id);
   }
 
+  @Get('/job/:id')
+  findByJob(@Param('id') id: string) {
+    return this.taskService.findByJobId(+id);
+  }
+
   @Patch('/approval/:id')
   update(@Param('id') id: string, @Body() updateTaskDto: ApproveTaskDto) {
     return this.taskService.approve(+id, updateTaskDto);

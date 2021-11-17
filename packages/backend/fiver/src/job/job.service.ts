@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Task } from 'src/task/entities/task.entity';
 import { Users } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateJobDto } from './dto/create-job.dto';
@@ -14,6 +15,8 @@ export class JobService {
     private usersRepository: Repository<Users>,
     @InjectRepository(Job)
     private jobRepository: Repository<Job>,
+    @InjectRepository(Task)
+    private taskRepository: Repository<Task>,
   ) {}
   async create(createJobDto: CreateJobDto) {
     const newJob = new Job();
@@ -24,6 +27,7 @@ export class JobService {
     newJob.description = createJobDto.description;
     newJob.poster = user;
     const savedJob = await this.jobRepository.save([newJob]);
+    savedJob['price'] = 0;
     return savedJob;
   }
 
@@ -31,6 +35,17 @@ export class JobService {
     const allJob = await this.jobRepository.find({
       relations: ['poster'],
     });
+    let i;
+    for (i=0;i<allJob.length;i++){
+      let jobPx = 0;
+      const allTask = await this.taskRepository.find({
+        where: [{ jobid: allJob[i].id }],
+      });
+      for (let j = 0; j<allTask.length;j++){
+        jobPx = jobPx + allTask[j].price;
+      }
+      allJob[i]['price'] = jobPx;
+    }
     return allJob;
   }
 
@@ -39,6 +54,14 @@ export class JobService {
       where: [{ id: id }],
       relations: ['poster'],
     });
+    let jobPx = 0
+    const allTasks = await this.taskRepository.find({
+      where: [{ jobid: job.id }],
+    })
+    for (let j = 0; j<allTasks.length;j++){
+      jobPx = jobPx + allTasks[j].price;
+    }
+    job['price'] = jobPx;
     return job;
   }
 

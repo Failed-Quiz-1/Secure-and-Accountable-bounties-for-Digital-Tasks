@@ -84,6 +84,13 @@ export class TaskService {
     }
   }
 
+  async findByJobId (jobid: number){
+    const allTasks = await this.taskRepository.find({
+      where: [{ jobid: jobid }],
+    })
+    return allTasks;
+  }
+
   async approve(id: number, approveTaskDto: ApproveTaskDto) {
     const task = await this.taskRepository.findOne({
       where: [{ id: id }],
