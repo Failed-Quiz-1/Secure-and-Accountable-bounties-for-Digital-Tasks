@@ -1,4 +1,4 @@
-import { Users } from 'src/users/entities/user.entity';
+import { Job } from 'src/job/entities/job.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('task')
@@ -6,8 +6,8 @@ export class Task{
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Users, { onDelete: 'CASCADE' })
-  poster: Users;
+  @ManyToOne(() => Job, { onDelete: 'CASCADE' })
+  poster: Job;
 
   @Column()
   name: string;
@@ -15,6 +15,9 @@ export class Task{
   @Column()
   description: string;
 
+  @Column()
+  price: number;
+  
   @Column()
   status: string;
 

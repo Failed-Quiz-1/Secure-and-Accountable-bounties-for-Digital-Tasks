@@ -27,6 +27,9 @@ export class Draft {
 
   @CreateDateColumn({ type: 'timestamp' })
   createdOn: Date;
+
+  @Column({default:""})
+  filename:string;
 }
 
 
