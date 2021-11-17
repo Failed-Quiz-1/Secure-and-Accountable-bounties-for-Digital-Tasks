@@ -41,10 +41,12 @@ export class JobService {
       const allTask = await this.taskRepository.find({
         where: [{ job: allJob[i] }],
       });
-      for (let j = 0; j < allTask.length; j++) {
-        jobPx = jobPx + allTask[j].price;
+      if (allTask.length){
+        for (let j = 0; j < allTask.length; j++) {
+          jobPx = jobPx + allTask[j].price;
+        }
       }
-      allJob[i]['price'] = jobPx;
+        allJob[i]['price'] = jobPx;
     }
     return allJob;
   }
@@ -58,9 +60,11 @@ export class JobService {
     const allTasks = await this.taskRepository.find({
       where: [{ jobid: job.id }],
     });
-    for (let j = 0; j < allTasks.length; j++) {
+    if (allTasks.length){
+      for (let j = 0; j < allTasks.length; j++) {
       jobPx = jobPx + allTasks[j].price;
     }
+  }
     job['price'] = jobPx;
     return job;
   }
