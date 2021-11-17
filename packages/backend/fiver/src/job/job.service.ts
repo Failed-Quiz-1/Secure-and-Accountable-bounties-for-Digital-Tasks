@@ -9,7 +9,6 @@ import { Job } from './entities/job.entity';
 
 @Injectable()
 export class JobService {
-
   constructor(
     @InjectRepository(Users)
     private usersRepository: Repository<Users>,
@@ -27,7 +26,7 @@ export class JobService {
     newJob.description = createJobDto.description;
     newJob.poster = user;
     const savedJob = await this.jobRepository.save([newJob]);
-    savedJob['price'] = 0;
+    savedJob[0]['price'] = 0;
     return savedJob;
   }
 
@@ -36,12 +35,13 @@ export class JobService {
       relations: ['poster'],
     });
     let i;
-    for (i=0;i<allJob.length;i++){
+    console.log(allJob);
+    for (i = 0; i < allJob.length; i++) {
       let jobPx = 0;
       const allTask = await this.taskRepository.find({
-        where: [{ jobid: allJob[i].id }],
+        where: [{ job: allJob[i] }],
       });
-      for (let j = 0; j<allTask.length;j++){
+      for (let j = 0; j < allTask.length; j++) {
         jobPx = jobPx + allTask[j].price;
       }
       allJob[i]['price'] = jobPx;
@@ -54,15 +54,14 @@ export class JobService {
       where: [{ id: id }],
       relations: ['poster'],
     });
-    let jobPx = 0
+    let jobPx = 0;
     const allTasks = await this.taskRepository.find({
       where: [{ jobid: job.id }],
-    })
-    for (let j = 0; j<allTasks.length;j++){
+    });
+    for (let j = 0; j < allTasks.length; j++) {
       jobPx = jobPx + allTasks[j].price;
     }
     job['price'] = jobPx;
     return job;
   }
-
 }

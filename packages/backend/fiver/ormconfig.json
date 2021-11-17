@@ -6,6 +6,7 @@
     "password": "6a39345d7c4aaa9d855f81683a13c811b0adfc31bf9c11ff186aa22a22b7e21d",
     "database": "d6baee7vh771gc",
     "entities": ["dist/**/*.entity{.ts,.js}"],
+    "autoLoadEntities":true,
     "synchronize": true,
     "ssl": true,
     "extra": {
