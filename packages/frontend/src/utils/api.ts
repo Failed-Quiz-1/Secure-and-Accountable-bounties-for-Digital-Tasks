@@ -71,6 +71,24 @@ export async function createTask(
   }
 }
 
+export async function createJob(
+  userId: number,
+  jobName: string,
+  description: string
+) {
+  try {
+    const body = {
+      userid: userId,
+      jobname: jobName,
+      description: description,
+    };
+    var result = await axios.post(`${baseURL}/job`, body);
+    return result;
+  } catch (error) {
+    throw new Error("Error creating a new task, please try again");
+  }
+}
+
 export async function rejectDraft(draftId: number, mnemonic: string) {
   try {
     const body = {
