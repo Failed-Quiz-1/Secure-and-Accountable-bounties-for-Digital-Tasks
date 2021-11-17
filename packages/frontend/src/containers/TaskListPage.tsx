@@ -9,6 +9,7 @@ import {
   Segment,
   Step,
 } from "semantic-ui-react";
+import JobDetail from "../components/JobDetail";
 import TaskList from "../components/TaskList";
 import Task from "../models/task";
 import { fetchTaskList } from "../utils/api";
@@ -25,23 +26,17 @@ const TaskListPage = (props: any) => {
   const fetchTasks = async () => {
     setLoading(true);
     setTasks([]);
-    var data = await fetchTaskList();
+    var data = await fetchTaskList(jobId);
     setTasks(data);
     setLoading(false);
   };
 
   return (
     <div>
-      <Segment attached></Segment>
+      <JobDetail jobId={jobId} />
       <Header as="h2" block>
-        Tasks for Job Id: {jobId}
-        <Link to={`/createtask/${jobId}`}>
-          <Button floated="right" color="teal">
-            Create Task
-          </Button>
-        </Link>
+        Tasks
       </Header>
-      <br />
       {loading ? <Loader active>Loading</Loader> : <TaskList tasks={tasks} />}
     </div>
   );

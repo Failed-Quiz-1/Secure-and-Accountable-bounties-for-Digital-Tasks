@@ -10,6 +10,7 @@ const CreateTaskPage = (props: any) => {
 
   const [description, setDescription] = useState("");
   const [taskName, setTaskName] = useState("");
+  const [price, setPrice] = useState(0);
   const [loading, setLoading] = useState(false);
 
   let history = useHistory();
@@ -17,7 +18,7 @@ const CreateTaskPage = (props: any) => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      await createTask(getUserId(), taskName, description);
+      await createTask(price, taskName, description, jobId);
       setLoading(false);
       history.goBack();
     } catch (error) {
@@ -47,6 +48,17 @@ const CreateTaskPage = (props: any) => {
             <input
               placeholder="Description"
               onChange={(e) => setDescription(e.target.value)}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label>Price</label>
+            <input
+              placeholder="Price"
+              onChange={(e) => {
+                try {
+                  setPrice(parseFloat(e.target.value));
+                } catch (error) {}
+              }}
             />
           </Form.Field>
           <Button type="submit" color="twitter" onClick={handleSubmit}>

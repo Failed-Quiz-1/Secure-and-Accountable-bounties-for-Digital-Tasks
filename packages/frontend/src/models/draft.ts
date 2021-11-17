@@ -10,4 +10,5 @@ export default interface Draft {
   createdOn: string;
   task: Task;
   author: User;
+  filename: string;
 }
