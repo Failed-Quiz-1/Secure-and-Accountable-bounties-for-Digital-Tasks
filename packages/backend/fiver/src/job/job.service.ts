@@ -58,7 +58,7 @@ export class JobService {
     });
     let jobPx = 0;
     const allTasks = await this.taskRepository.find({
-      where: [{ jobid: job.id }],
+      where: [{ job: job }],
     });
     if (allTasks.length){
       for (let j = 0; j < allTasks.length; j++) {
