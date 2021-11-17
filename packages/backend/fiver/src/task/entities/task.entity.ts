@@ -7,7 +7,7 @@ export class Task{
   id: number;
 
   @ManyToOne(() => Job, { onDelete: 'CASCADE' })
-  poster: Job;
+  job: Job;
 
   @Column()
   name: string;

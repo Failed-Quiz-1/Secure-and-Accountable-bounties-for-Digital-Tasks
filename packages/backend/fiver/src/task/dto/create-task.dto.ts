@@ -1,5 +1,6 @@
 export class CreateTaskDto {
-  userid: number;
+  jobid: number;
   taskname: string;
   description: string;
+  price: number;
 }
