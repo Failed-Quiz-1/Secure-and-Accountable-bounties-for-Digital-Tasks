@@ -26,7 +26,7 @@ yarn start
 ## Description
 
 ### DB Design
-
+![img](https://lucid.app/publicSegments/view/efc4c2c5-22f3-40e4-b73c-091500278959/image.jpeg)
 https://lucid.app/lucidchart/45281327-603d-459a-bf80-9b9565ae9379/edit?viewport_loc=86%2C-177%2C1865%2C946%2C0_0&invitationId=inv_09cd3151-15be-46dd-ba22-d604ece171a9
 
 ### Yarn install error in ubuntu

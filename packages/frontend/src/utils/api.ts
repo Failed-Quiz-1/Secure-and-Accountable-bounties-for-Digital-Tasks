@@ -6,7 +6,7 @@ import {
 } from "crypto-helper";
 import Draft from "../models/draft";
 import Task from "../models/task";
-import { getCurrentDateString, getUserId } from "./util";
+import { getUserId } from "./util";
 // var Mnemonic = require("crypto-helper/node_modules/bitcore-mnemonic");
 // var bitcore = require("crypto-helper/node_modules/bitcore-lib");
 //sweesen99:123
@@ -65,6 +65,24 @@ export async function createTask(
       description: description,
     };
     var result = await axios.post(`${baseURL}/task`, body);
+    return result;
+  } catch (error) {
+    throw new Error("Error creating a new task, please try again");
+  }
+}
+
+export async function createJob(
+  userId: number,
+  jobName: string,
+  description: string
+) {
+  try {
+    const body = {
+      userid: userId,
+      jobname: jobName,
+      description: description,
+    };
+    var result = await axios.post(`${baseURL}/job`, body);
     return result;
   } catch (error) {
     throw new Error("Error creating a new task, please try again");

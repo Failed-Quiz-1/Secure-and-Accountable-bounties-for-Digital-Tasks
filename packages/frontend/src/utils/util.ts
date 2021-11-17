@@ -18,20 +18,9 @@ export function removeUser() {
   localStorage.removeItem("username");
 }
 
-export function getCurrentDateString() {
-  const currentdate = new Date();
-  const datetime =
-    "Last Sync: " +
-    currentdate.getDate() +
-    "/" +
-    (currentdate.getMonth() + 1) +
-    "/" +
-    currentdate.getFullYear() +
-    " @ " +
-    currentdate.getHours() +
-    ":" +
-    currentdate.getMinutes() +
-    ":" +
-    currentdate.getSeconds();
-  return datetime;
+export function chunk(arr: any, chunkSize: any): any {
+  var R = [];
+  for (var i = 0, len = arr.length; i < len; i += chunkSize)
+    R.push(arr.slice(i, i + chunkSize));
+  return R;
 }

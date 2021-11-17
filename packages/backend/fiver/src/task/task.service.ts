@@ -13,12 +13,13 @@ import { Task } from './entities/task.entity';
 import * as crypto from 'crypto-helper';
 import { Draft } from 'src/draft/entities/draft.entity';
 import { Admin } from 'src/admin/entities/admin.entity';
+import { Job } from 'src/job/entities/job.entity';
 
 @Injectable()
 export class TaskService {
   constructor(
-    @InjectRepository(Users)
-    private usersRepository: Repository<Users>,
+    @InjectRepository(Job)
+    private jobRepository: Repository<Job>,
     @InjectRepository(Task)
     private taskRepository: Repository<Task>,
     @InjectRepository(Draft)
@@ -50,11 +51,12 @@ export class TaskService {
       const newTask = new Task();
       newTask.name = createTaskDto.taskname;
       newTask.description = createTaskDto.description;
+      newTask.price = createTaskDto.price;
       newTask.status = 'POSTED';
-      const user = await this.usersRepository.findOneOrFail({
-        id: createTaskDto.userid,
+      const job = await this.jobRepository.findOneOrFail({
+        id: createTaskDto.jobid,
       });
-      newTask.poster = user;
+      newTask.job = job;
       await this.taskRepository.save([newTask]);
       return newTask;
     } catch (error) {
@@ -64,8 +66,9 @@ export class TaskService {
 
   async findAll() {
     const allTasks = await this.taskRepository.find({
-      relations: ['poster'],
+      relations: ['job'],
     });
+    
     return allTasks;
   }
 
@@ -73,7 +76,7 @@ export class TaskService {
     try {
       const task = await this.taskRepository.findOneOrFail({
         where: [{ id: id }],
-        relations: ['poster'],
+        relations: ['job'],
       });
       return task;
     } catch (e) {
@@ -81,12 +84,26 @@ export class TaskService {
     }
   }
 
+  async findByJobId (jobid: number){
+    const job = await this.jobRepository.findOne({
+      where: [{ id: jobid }],
+    })
+    const allTasks = await this.taskRepository.find({
+      where: [{ job: job }],
+    })
+    return allTasks;
+  }
+
   async approve(id: number, approveTaskDto: ApproveTaskDto) {
     const task = await this.taskRepository.findOne({
       where: [{ id: id }],
-      relations: ['poster'],
+      relations: ['job'],
     });
     if (!task) throw new NotFoundException('Task not found!');
+    const job = await this.jobRepository.findOne({
+      where: [{ id: task.job.id }],
+      relations: ['poster'],
+    });
     const draft = await this.draftRepository.findOne({
       where: [{ id: approveTaskDto.approved_draftid }],
       relations: ['author', 'task'],
@@ -96,14 +113,15 @@ export class TaskService {
     //task.payment_signature = approveTaskDto.passphrase;
     task.approval_draft_id = approveTaskDto.approved_draftid;
     const ppk = crypto.generatePublicAndPrivateKey(approveTaskDto.mnemonic);
-    if (ppk.publicKey !== task.poster.public_key) {
+    if (ppk.publicKey !== job.poster.public_key) {
       throw new NotFoundException('Incorrect mnemonic string');
     }
-    const newMessage: crypto.SignatureMessage = {
-      fromUserId: task.poster.id,
+    const newMessage = {
+      fromUserId: job.poster.id,
       toUserId: draft.author.id,
       taskId: id,
       createdOn: await this.getCurrDateTime(),
+      step:1,
       status: 'APPROVED',
     };
     task.payment_sig_message = JSON.stringify(newMessage);
@@ -127,9 +145,13 @@ export class TaskService {
   async releaseIP(id, approveTaskDto: ApproveTaskDto) {
     const task = await this.taskRepository.findOneOrFail({
       where: [{ id: id }],
-      relations: ['poster'],
+      relations: ['job'],
     });
     if (!task) throw new NotFoundException('Task not found!');
+    const job = await this.jobRepository.findOneOrFail({
+      where: [{ id: task.job.id }],
+      relations: ['poster'],
+    });
     task.status = 'COMPLETED';
     const draft = await this.draftRepository.findOne({
       where: [{ id: task.approval_draft_id }],
@@ -140,11 +162,12 @@ export class TaskService {
     if (ppk.publicKey !== draft.author.public_key) {
       throw new NotFoundException('Incorrect mnemonic string');
     }
-    const newMessage: crypto.SignatureMessage = {
-      fromUserId: task.poster.id,
+    const newMessage= {
+      fromUserId: job.poster.id,
       toUserId: draft.author.id,
       taskId: id,
       createdOn: await this.getCurrDateTime(),
+      step:2,
       status: 'COMPLETED',
     };
     task.ip_sig_message = JSON.stringify(newMessage);
@@ -166,11 +189,15 @@ export class TaskService {
   }
 
   async releasePaymentAndIP(taskid) {
-    const task = await this.taskRepository.findOneOrFail({
+    const task = await this.taskRepository.findOne({
       where: [{ id: taskid }],
-      relations: ['poster'],
+      relations: ['job'],
     });
     if (!task) throw new NotFoundException('Task not found!');
+    const job = await this.jobRepository.findOne({
+      where: [{ id: task.job.id }],
+      relations: ['poster'],
+    });
     task.status = 'RELEASED_IP_AND_PAYMENT';
     const draft = await this.draftRepository.findOne({
       where: [{ id: task.approval_draft_id }],
@@ -181,11 +208,12 @@ export class TaskService {
       throw new InternalServerErrorException('Transaction incomplete!');
     }
     const admin = await this.adminRepository.find();
-    const newMessage: crypto.ServerReleaseSignatureMessage = {
-      ipToUserId: task.poster.id,
+    const newMessage = {
+      ipToUserId: job.poster.id,
       paymentToUserId: draft.author.id,
       taskId: task.id,
       createdOn: await this.getCurrDateTime(),
+      step:3,
       status: 'RELEASED_IP_AND_PAYMENT',
     };
     const releaseMsg = JSON.stringify(newMessage);

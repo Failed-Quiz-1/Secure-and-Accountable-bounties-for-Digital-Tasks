@@ -13,6 +13,7 @@ import { RejectDraftDto } from './dto/update-draft.dto';
 import { Draft } from './entities/draft.entity';
 import * as crypto from 'crypto-helper';
 import { SignatureMessage } from 'crypto-helper';
+import { Job } from 'src/job/entities/job.entity';
 @Injectable()
 export class DraftService {
   constructor(
@@ -22,12 +23,14 @@ export class DraftService {
     private taskRepository: Repository<Task>,
     @InjectRepository(Draft)
     private draftRepository: Repository<Draft>,
+    @InjectRepository(Job)
+    private jobRepository: Repository<Job>,
   ) {}
 
   async getCurrDateTime() {
     const currentdate = new Date();
     const datetime =
-      'Last Sync: ' +
+      'Date: ' +
       currentdate.getDate() +
       '/' +
       (currentdate.getMonth() + 1) +
@@ -48,17 +51,22 @@ export class DraftService {
     });
     const task = await this.taskRepository.findOne({
       where: [{ id: createDraftDto.taskid }],
-      relations: ['poster'],
+      relations: ['job'],
     });
+    const job = await this.jobRepository.findOne({
+      where: [{ id: task.job.id }],
+      relations: ['poster'],
+    })
     newDraft.author = user;
     newDraft.task = task;
     const ppk = crypto.generatePublicAndPrivateKey(createDraftDto.mnemonic);
-    const posterid = task.poster.id;
-    const newMessage: SignatureMessage = {
+    const posterid = job.poster.id;
+    const newMessage = {
       fromUserId: createDraftDto.userid,
       toUserId: posterid,
       taskId: createDraftDto.taskid,
       createdOn: await this.getCurrDateTime(),
+      step: 0,
       status: 'POSTED',
     };
     const draft_msg = JSON.stringify(newMessage);
@@ -72,6 +80,7 @@ export class DraftService {
       ppk.publicKey,
     );
     if (isCorrectMnemonic) {
+      newDraft.filename = createDraftDto.filepath;
       await this.draftRepository.save([newDraft]);
       return newDraft;
     }
@@ -85,17 +94,22 @@ export class DraftService {
     });
     const task = await this.taskRepository.findOneOrFail({
       where: [{ id: draft.task.id }],
+      relations: ['job'],
+    });
+    const job = await this.jobRepository.findOneOrFail({
+      where: [{ id: task.job.id }],
       relations: ['poster'],
     });
-    const newMessage: SignatureMessage = {
-      fromUserId: task.poster.id,
+    const newMessage = {
+      fromUserId: job.poster.id,
       toUserId: draft.author.id,
       taskId: draft.task.id,
       createdOn: await this.getCurrDateTime(),
+      step: -1,
       status: 'REJECTED',
     };
     const ppk = crypto.generatePublicAndPrivateKey(rejectDraftDto.mnemonic);
-    if (ppk.publicKey !== task.poster.public_key) {
+    if (ppk.publicKey !== job.poster.public_key) {
       throw new BadRequestException('Incorrect mnemonic string!');
     }
     const reject_msg = JSON.stringify(newMessage);

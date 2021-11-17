@@ -10,37 +10,35 @@ import LoginPage from "./LoginPage";
 import CreateDraftPage from "./CreateDraftPage";
 
 import RegisterPage from "./RegisterPage";
+import PrivateRoute from "../components/PrivateRoute";
+import { getUsername } from "../utils/util";
+import JobsListPage from "./JobsListPage";
+import CreateJobPage from "./CreateJobPage";
+import ProfilePage from "./ProfilePage";
 const HomePage = () => {
   return (
     <div>
       <Router>
-        <NavBar />
+        {getUsername() && <NavBar />}
         <Divider />
         <br />
         <Switch>
-          <Route path="/home">
-            <TaskListPage />
-          </Route>
-          <Route path="/createtask">
-            <CreateTaskPage />
-          </Route>
-          <Route
+          {/* public routes */}
+          <Route path="/login" component={LoginPage} />
+          <Route path="/register" component={RegisterPage} />
+
+          {/* private routes */}
+          <PrivateRoute exact path="/" component={JobsListPage} />
+          <PrivateRoute exact path="/jobs/:jobId" component={TaskListPage} />
+          <PrivateRoute path="/createjob" component={CreateJobPage} />
+          <PrivateRoute path="/createtask/:jobId" component={CreateTaskPage} />
+          <PrivateRoute
             path="/createdraft/:taskId"
             component={CreateDraftPage}
-          ></Route>
-          <Route path="/profile">
-            <h1>profile page</h1>
-          </Route>
-          <Route path="/tasks/:taskId" component={TaskDetailPage}></Route>
-          <Route exact path="/">
-            <TaskListPage />
-          </Route>
-          <Route path="/login">
-            <LoginPage />
-          </Route>
-          <Route path="/register">
-            <RegisterPage />
-          </Route>
+          />
+          <PrivateRoute path="/profile" component={ProfilePage} />
+          <PrivateRoute path="/tasks/:taskId" component={TaskDetailPage} />
+          <h1>Invalid url </h1>
         </Switch>
       </Router>
     </div>
