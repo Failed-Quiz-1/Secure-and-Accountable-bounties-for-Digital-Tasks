@@ -76,9 +76,13 @@ const DraftCard = (props: DraftCardProps) => {
         <br />
         <br />
         <Item.Meta>{props.draft.createdOn}</Item.Meta>
-        <Button floated="right" onClick={itemOnClick}>
-          Show Signature Info
-        </Button>
+        <div>
+          <Button floated="right" onClick={itemOnClick}>
+            Show Signature Info
+          </Button>
+          <br />
+          <br />
+        </div>
         {shouldShowReleaseIPButton ? (
           <Item.Extra>
             <Button
