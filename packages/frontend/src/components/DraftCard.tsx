@@ -44,8 +44,11 @@ const DraftCard = (props: DraftCardProps) => {
   const itemOnClick = () => {
     const info = `
   Approve Signature Message: ${props.draft.draft_sig_message}
+
   Approve Signature: ${props.draft.draft_signature}
+
   Reject Signature Message: ${props.draft.reject_sig_message}
+  
   Reject Signature: ${props.draft.reject_signature}
           `;
     alert(info);

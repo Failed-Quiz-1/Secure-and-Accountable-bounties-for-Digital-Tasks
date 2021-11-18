@@ -5,10 +5,15 @@ const TaskProgress = (props: { task: Task }) => {
   const itemOnClick = () => {
     const info = `
 Payment Message: ${props.task.payment_sig_message}
+
 Payment Signature: ${props.task.payment_signature}
+
 IP Release Message: ${props.task.ip_sig_message}
+
 IP Release  Signature: ${props.task.ip_signature}
+
 Server Release Message: ${props.task.server_sig_message}
+
 Server Release Signature: ${props.task.server_signature}
         `;
     alert(info);
