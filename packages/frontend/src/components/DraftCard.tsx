@@ -55,9 +55,12 @@ const DraftCard = (props: DraftCardProps) => {
     <Item>
       <Item.Content>
         {isApprovedDraft ? (
-          <Label as="a" tag color="teal">
-            Approved
-          </Label>
+          <div>
+            <Label as="a" tag color="teal">
+              Approved
+            </Label>
+            <br />
+          </div>
         ) : (
           <div></div>
         )}

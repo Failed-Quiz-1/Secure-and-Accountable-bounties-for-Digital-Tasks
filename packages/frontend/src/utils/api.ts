@@ -3,8 +3,7 @@ import Draft from "../models/draft";
 import Job from "../models/job";
 import Task from "../models/task";
 import { getUserId } from "./util";
-// var Mnemonic = require("crypto-helper/node_modules/bitcore-mnemonic");
-// var bitcore = require("crypto-helper/node_modules/bitcore-lib");
+
 //sweesen100:123
 // siren world drive old pepper shoulder best issue abuse faculty canal kangaroo
 
