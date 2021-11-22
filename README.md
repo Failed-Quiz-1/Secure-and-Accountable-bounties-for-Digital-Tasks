@@ -1,34 +1,15 @@
 # Secure-and-Accountable-bounties-for-Digital-Tasks
 
-![workflow status](https://github.com/Failed-Quiz-1/Secure-and-Accountable-bounties-for-Digital-Tasks/actions/workflows/docker-image.yml/badge.svg)
+## Motivation
 
-## Run the app locally
+The motivation of this project is to create a platform for users to post and complete digital tasks in a secure and accountable manner.
 
-### With Docker
-```
-docker run -p 3000:3000 -p 5000:5000 -d sweesenkoh/failedquiz1_fiver_app:latest
-```
+## Research
 
-or
+## Design
 
+![image](https://lucid.app/publicSegments/view/5d5b3b8e-61e3-4002-bd00-16ce5ad6acb5/image.png)
 
-### Manual setup
+## Development
 
-Install all dependencies
-```
-yarn setup
-```
-Start both frontend and backend
-```
-yarn start
-```
-
-## Description
-
-### DB Design
-![img](https://lucid.app/publicSegments/view/efc4c2c5-22f3-40e4-b73c-091500278959/image.jpeg)
-https://lucid.app/lucidchart/45281327-603d-459a-bf80-9b9565ae9379/edit?viewport_loc=86%2C-177%2C1865%2C946%2C0_0&invitationId=inv_09cd3151-15be-46dd-ba22-d604ece171a9
-
-### Yarn install error in ubuntu
-
-https://stackoverflow.com/questions/46013544/yarn-install-command-error-no-such-file-or-directory-install
+## Use of Code
