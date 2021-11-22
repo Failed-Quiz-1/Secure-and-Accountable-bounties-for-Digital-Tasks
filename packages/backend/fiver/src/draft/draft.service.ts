@@ -56,7 +56,7 @@ export class DraftService {
     const job = await this.jobRepository.findOne({
       where: [{ id: task.job.id }],
       relations: ['poster'],
-    })
+    });
     newDraft.author = user;
     newDraft.task = task;
     const ppk = crypto.generatePublicAndPrivateKey(createDraftDto.mnemonic);
@@ -68,6 +68,7 @@ export class DraftService {
       createdOn: await this.getCurrDateTime(),
       step: 0,
       status: 'POSTED',
+      filehash: createDraftDto.filehash,
     };
     const draft_msg = JSON.stringify(newMessage);
     const draft_signature = crypto.createSignature(newMessage, ppk.privateKey);

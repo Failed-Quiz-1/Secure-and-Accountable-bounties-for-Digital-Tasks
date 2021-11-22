@@ -4,7 +4,7 @@ import Job from "../models/job";
 import Task from "../models/task";
 import { getUserId } from "./util";
 
-//sweesen100:123
+// sweesen100:123
 // siren world drive old pepper shoulder best issue abuse faculty canal kangaroo
 
 var url = new URL(window.location.href);
@@ -66,7 +66,8 @@ export async function fetchJobDetail(jobId: number): Promise<Job> {
 export async function createDraft(
   taskId: number,
   mnemonic: string,
-  filepath: string
+  filepath: string,
+  hash: string
 ) {
   try {
     const body = {
@@ -74,6 +75,7 @@ export async function createDraft(
       taskid: taskId,
       mnemonic: mnemonic,
       filepath: filepath,
+      filehash: hash,
     };
     var result = await axios.post(`${baseURL}/draft`, body);
     console.log(result);
@@ -217,5 +219,6 @@ export async function loginUser(
 
 export async function uploadFile(data: any) {
   var result: any = await axios.post(`${baseURL}/upload`, data, {});
+  console.log(result.data);
   return result.data;
 }

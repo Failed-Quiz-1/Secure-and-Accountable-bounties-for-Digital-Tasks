@@ -23,7 +23,7 @@ const CreateDraftPage = (props: any) => {
       const formData = new FormData();
       formData.append("file", data.pdf[0]);
       const res = await uploadFile(formData);
-      await createDraft(taskId, passphrase, res);
+      await createDraft(taskId, passphrase, res.filename, res.hash);
       setLoading(false);
       history.goBack();
     } catch (error) {
