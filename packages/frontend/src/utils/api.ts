@@ -1,51 +1,82 @@
 import axios from "axios";
-import {
-  createSignature,
-  generatePublicAndPrivateKey,
-  SignatureMessage,
-} from "crypto-helper";
 import Draft from "../models/draft";
+import Job from "../models/job";
 import Task from "../models/task";
 import { getUserId } from "./util";
-// var Mnemonic = require("crypto-helper/node_modules/bitcore-mnemonic");
-// var bitcore = require("crypto-helper/node_modules/bitcore-lib");
-//sweesen99:123
-// physical option stage siren use bronze pipe stable rescue bag aunt fine
 
-// sweesen100:123
-// ethics differ achieve tip door can length service negative either ignore tonight
-// const baseURL = process.env.REACT_APP_API_URL;
-console.log(window.location.href);
+//sweesen100:123
+// siren world drive old pepper shoulder best issue abuse faculty canal kangaroo
+
 var url = new URL(window.location.href);
 url.port = "3000";
-const baseURL = url.origin;
+export const baseURL = url.origin;
 
-export async function fetchTaskList() {
-  var result = await fetch(`${baseURL}/task`);
+const mock = false;
+
+export async function fetchTaskList(jobId: number) {
+  if (mock) {
+    return require("../mocks/tasks.json");
+  }
+  var result = await fetch(`${baseURL}/task/job/${jobId}`);
   var jsonResult: Task[] = await result.json();
+  console.log(jsonResult);
+  return jsonResult;
+}
+
+export async function fetchJobList() {
+  if (mock) {
+    return require("../mocks/jobs.json");
+  }
+  var result = await fetch(`${baseURL}/job`);
+  var jsonResult: Job[] = await result.json();
+  console.log(jsonResult);
   return jsonResult;
 }
 
 export async function fetchDraftList(taskId: number): Promise<Draft[]> {
+  if (mock) {
+    return require("../mocks/drafts.json");
+  }
   var result = await fetch(`${baseURL}/draft/task/${taskId}`);
   var jsonResult: Draft[] = await result.json();
+  console.log(jsonResult);
   return jsonResult;
 }
 
 export async function fetchTaskDetail(taskId: number): Promise<Task> {
+  if (mock) {
+    return require("../mocks/tasks.json")[0];
+  }
   var result = await fetch(`${baseURL}/task/${taskId.toString()}`);
   var jsonResult: Task = await result.json();
+  console.log(jsonResult);
   return jsonResult;
 }
 
-export async function createDraft(taskId: number, mnemonic: string) {
+export async function fetchJobDetail(jobId: number): Promise<Job> {
+  if (mock) {
+    return require("../mocks/jobs.json")[0];
+  }
+  var result = await fetch(`${baseURL}/job/${jobId.toString()}`);
+  var jsonResult: Job = await result.json();
+  console.log(jsonResult);
+  return jsonResult;
+}
+
+export async function createDraft(
+  taskId: number,
+  mnemonic: string,
+  filepath: string
+) {
   try {
     const body = {
       userid: getUserId(),
       taskid: taskId,
       mnemonic: mnemonic,
+      filepath: filepath,
     };
     var result = await axios.post(`${baseURL}/draft`, body);
+    console.log(result);
     return result;
   } catch (error) {
     console.log(error);
@@ -54,17 +85,21 @@ export async function createDraft(taskId: number, mnemonic: string) {
 }
 
 export async function createTask(
-  userId: number,
+  price: number,
   taskName: string,
-  description: string
+  description: string,
+  jobId: number
 ) {
   try {
     const body = {
-      userid: userId,
+      price: price,
       taskname: taskName,
       description: description,
+      jobid: jobId,
     };
+
     var result = await axios.post(`${baseURL}/task`, body);
+    console.log(result);
     return result;
   } catch (error) {
     throw new Error("Error creating a new task, please try again");
@@ -82,10 +117,12 @@ export async function createJob(
       jobname: jobName,
       description: description,
     };
+    // console.log(body);
     var result = await axios.post(`${baseURL}/job`, body);
+    console.log(result);
     return result;
   } catch (error) {
-    throw new Error("Error creating a new task, please try again");
+    throw new Error("Error creating a new job, please try again");
   }
 }
 
@@ -96,6 +133,7 @@ export async function rejectDraft(draftId: number, mnemonic: string) {
     };
     console.log(body);
     var result = await axios.patch(`${baseURL}/draft/${draftId}`, body);
+    console.log(result);
     return result;
   } catch (error) {
     console.log(error);
@@ -114,6 +152,7 @@ export async function approveDraft(
       mnemonic: mnemonic,
     };
     var result = await axios.patch(`${baseURL}/task/approval/${taskId}`, body);
+    console.log(result);
     return result;
   } catch (error) {
     console.log(error);
@@ -153,6 +192,7 @@ export async function createUser(
       name: name,
       password: password,
     });
+    console.log(result);
     return result.data as string;
   } catch (error) {
     throw new Error("Error has occured");
@@ -168,8 +208,14 @@ export async function loginUser(
       name: name,
       password: password,
     });
+    console.log(result);
     return result.data.id as number;
   } catch (error) {
     throw new Error("Error has occured");
   }
+}
+
+export async function uploadFile(data: any) {
+  var result: any = await axios.post(`${baseURL}/upload`, data, {});
+  return result.data;
 }

@@ -68,7 +68,17 @@ export class TaskService {
     const allTasks = await this.taskRepository.find({
       relations: ['job'],
     });
-    
+    for(let i=0;i<allTasks.length;i++){
+      if (allTasks[i].status === "POSTED"){
+        allTasks[i]["step"] = 0
+      }else if (allTasks[i].status === "APPROVED"){
+        allTasks[i]["step"] = 1
+      }else if (allTasks[i].status === "COMPLETED"){
+        allTasks[i]["step"] = 2
+      }else if (allTasks[i].status === "RELEASED_IP_AND_PAYMENT"){
+        allTasks[i]["step"] = 3
+      }
+    }
     return allTasks;
   }
 
@@ -78,6 +88,15 @@ export class TaskService {
         where: [{ id: id }],
         relations: ['job'],
       });
+      if (task.status === "POSTED"){
+        task["step"] = 0
+      }else if (task.status === "APPROVED"){
+        task["step"] = 1
+      }else if (task.status === "COMPLETED"){
+        task["step"] = 2
+      }else if (task.status === "RELEASED_IP_AND_PAYMENT"){
+        task["step"] = 3
+      }
       return task;
     } catch (e) {
       return new NotFoundException('Task not found');
@@ -91,6 +110,17 @@ export class TaskService {
     const allTasks = await this.taskRepository.find({
       where: [{ job: job }],
     })
+    for(let i=0;i<allTasks.length;i++){
+      if (allTasks[i].status === "POSTED"){
+        allTasks[i]["step"] = 0
+      }else if (allTasks[i].status === "APPROVED"){
+        allTasks[i]["step"] = 1
+      }else if (allTasks[i].status === "COMPLETED"){
+        allTasks[i]["step"] = 2
+      }else if (allTasks[i].status === "RELEASED_IP_AND_PAYMENT"){
+        allTasks[i]["step"] = 3
+      }
+    }
     return allTasks;
   }
 

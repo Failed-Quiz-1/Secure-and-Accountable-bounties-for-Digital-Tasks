@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1,
+    "draft_signature": "something",
+    "draft_sig_message": "something",
+    "reject_signature": "something",
+    "reject_sig_message": "something",
+    "createdOn": "something",
+    "task": {
+      "id": 4,
+      "name": "something",
+      "description": "somethinng",
+      "status": "somethinng",
+      "approval_draft_id": 1,
+      "payment_signature": "somethinng",
+      "payment_sig_message": "somethinng",
+      "ip_signature": "somethinng",
+      "ip_sig_message": "somethinng",
+      "server_signature": "somethinng",
+      "server_sig_message": "somethinng",
+      "step": 1
+    },
+    "author": {
+      "id": 1,
+      "name": "something",
+      "password": "something",
+      "public_key": "something"
+    }
+  },
+  {
+    "id": 1,
+    "draft_signature": "something",
+    "draft_sig_message": "something",
+    "reject_signature": "something",
+    "reject_sig_message": "something",
+    "createdOn": "something",
+    "task": {
+      "id": 4,
+      "name": "something",
+      "description": "somethinng",
+      "status": "somethinng",
+      "approval_draft_id": 1,
+      "payment_signature": "somethinng",
+      "payment_sig_message": "somethinng",
+      "ip_signature": "somethinng",
+      "ip_sig_message": "somethinng",
+      "server_signature": "somethinng",
+      "server_sig_message": "somethinng",
+      "step": 1
+    },
+    "author": {
+      "id": 1,
+      "name": "something",
+      "password": "something",
+      "public_key": "something"
+    }
+  },
+  {
+    "id": 1,
+    "draft_signature": "something",
+    "draft_sig_message": "something",
+    "reject_signature": "something",
+    "reject_sig_message": "something",
+    "createdOn": "something",
+    "task": {
+      "id": 4,
+      "name": "something",
+      "description": "somethinng",
+      "status": "somethinng",
+      "approval_draft_id": 1,
+      "payment_signature": "somethinng",
+      "payment_sig_message": "somethinng",
+      "ip_signature": "somethinng",
+      "ip_sig_message": "somethinng",
+      "server_signature": "somethinng",
+      "server_sig_message": "somethinng",
+      "step": 1
+    },
+    "author": {
+      "id": 1,
+      "name": "something",
+      "password": "something",
+      "public_key": "something"
+    }
+  }
+]

@@ -13,4 +13,5 @@ export default interface Task {
   server_signature: string;
   server_sig_message: string;
   step: number;
+  price: number;
 }

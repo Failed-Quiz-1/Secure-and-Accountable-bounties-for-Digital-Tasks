@@ -64,6 +64,10 @@ const DraftList = (props: DraftListProps) => {
           </Item.Group>
         </Segment>
       )}
+      <br />
+      <br />
+      <br />
+      <br />
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Form, Header, Button } from "semantic-ui-react";
+import { Modal, Form, Header, Button, Loader } from "semantic-ui-react";
 import "../css/MnemonicModal.css";
 
 interface MnemonicModalProps {
@@ -9,11 +9,17 @@ interface MnemonicModalProps {
 
 const MnemonicModal = (props: MnemonicModalProps) => {
   const [input, setInput] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
+    setLoading(true);
     e.preventDefault();
-    props.onSubmit(input);
+    await props.onSubmit(input);
   };
+
+  if (loading) {
+    return <Loader active>Submitting</Loader>;
+  }
 
   return (
     <div>

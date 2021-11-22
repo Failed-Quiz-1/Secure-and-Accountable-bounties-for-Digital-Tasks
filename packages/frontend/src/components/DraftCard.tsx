@@ -4,7 +4,12 @@ import Draft from "../models/draft";
 import { SignatureMessage } from "crypto-helper";
 import { getUserId } from "../utils/util";
 import MnemonicModal from "./MnemonicModal";
-import { approveDraft, rejectDraft, releaseDraftIP } from "../utils/api";
+import {
+  approveDraft,
+  baseURL,
+  rejectDraft,
+  releaseDraftIP,
+} from "../utils/api";
 import Task from "../models/task";
 interface DraftCardProps {
   draft: Draft;
@@ -36,38 +41,53 @@ const DraftCard = (props: DraftCardProps) => {
     props.draft.author.id === getUserId() &&
     props.task.ip_signature === "";
 
+  const itemOnClick = () => {
+    const info = `
+  Approve Signature Message: ${props.draft.draft_sig_message}
+
+  Approve Signature: ${props.draft.draft_signature}
+
+  Reject Signature Message: ${props.draft.reject_sig_message}
+  
+  Reject Signature: ${props.draft.reject_signature}
+          `;
+    alert(info);
+  };
+
   return (
     <Item>
       <Item.Content>
         {isApprovedDraft ? (
-          <Label as="a" tag color="teal">
-            Approved
-          </Label>
+          <div>
+            <Label as="a" tag color="teal">
+              Approved
+            </Label>
+            <br />
+          </div>
         ) : (
           <div></div>
         )}
-        <Item.Description>Draft id: {props.draft.id}</Item.Description>
-        <Item.Description>
-          Draft Message: {props.draft.draft_sig_message}
-        </Item.Description>
-        <Item.Description>
-          Draft Signature: {props.draft.draft_signature}
-        </Item.Description>
-        <Item.Description>
-          Reject Signature: {props.draft.reject_signature}
-        </Item.Description>
-        <Item.Description>
-          Reject Message: {props.draft.reject_sig_message}
-        </Item.Description>
+        <br />
+
+        <Item.Header>{props.draft.author.name}</Item.Header>
 
         <br />
-        <Item.Meta>
-          <span className="cinema">{props.draft.createdOn}</span>
-        </Item.Meta>
         <br />
+        <a href={`${baseURL}/upload/${props.draft.filename}`}>
+          Draft File Link
+        </a>
+        <br />
+        <br />
+        <Item.Meta>{props.draft.createdOn}</Item.Meta>
+        <div>
+          <Button floated="right" onClick={itemOnClick}>
+            Show Signature Info
+          </Button>
+          <br />
+          <br />
+        </div>
         {shouldShowReleaseIPButton ? (
           <Item.Extra>
-            <Label>{props.draft.author.name}</Label>
             <Button
               floated="right"
               basic
@@ -87,7 +107,6 @@ const DraftCard = (props: DraftCardProps) => {
           <div></div>
         ) : (
           <Item.Extra>
-            <Label>{props.draft.author.name}</Label>
             <Button
               floated="right"
               basic

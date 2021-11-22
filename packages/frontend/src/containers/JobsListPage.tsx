@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Header, Grid } from "semantic-ui-react";
+import { Button, Header, Grid, Loader } from "semantic-ui-react";
 import JobCard from "../components/JobCard";
 import Job from "../models/job";
+import { fetchJobList } from "../utils/api";
 import { chunk } from "../utils/util";
 
 const JobsListPage = () => {
-  const jobs: Job[] = require("../mocks/jobs.json");
-  const jobChunks: Job[][] = chunk(jobs, 3);
+  const [jobChunks, setJobChunks] = useState<Job[][]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  const fetchJobs = async () => {
+    setLoading(true);
+    setJobChunks([]);
+    var data = await fetchJobList();
+    setJobChunks(chunk(data, 3));
+    setLoading(false);
+  };
 
   return (
     <div>
@@ -21,21 +34,25 @@ const JobsListPage = () => {
           </Link>
         </Header>
       </div>
-      <Grid columns={3}>
-        {jobChunks.map((chunk: Job[]) => {
-          return (
-            <Grid.Row>
-              {chunk.map((job: Job) => {
-                return (
-                  <Grid.Column>
-                    <JobCard job={job} />
-                  </Grid.Column>
-                );
-              })}
-            </Grid.Row>
-          );
-        })}
-      </Grid>
+      {loading ? (
+        <Loader active>Loading</Loader>
+      ) : (
+        <Grid columns={3}>
+          {jobChunks.map((chunk: Job[]) => {
+            return (
+              <Grid.Row>
+                {chunk.map((job: Job) => {
+                  return (
+                    <Grid.Column>
+                      <JobCard job={job} />
+                    </Grid.Column>
+                  );
+                })}
+              </Grid.Row>
+            );
+          })}
+        </Grid>
+      )}
     </div>
   );
 };
