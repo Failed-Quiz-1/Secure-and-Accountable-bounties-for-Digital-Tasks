@@ -19,12 +19,10 @@ This resolve the problem as
 2. We can verify that the signature can only belong to the sender with the sender's public key.
 3. Nobody can falsify a digital signature without the private key of sender, which is assumed safe with the user.
 
-## Research
-
 ## Design
 
 
-## Functional Requirements
+### Functional Requirements
 1. User must be able to register for an account and login to Fiver.
 2. The system must generate both private and public key pair upon registration of user.
 3. The system must store public key, and give user a mnemonic which can deterministically produce his private key.
@@ -34,10 +32,14 @@ This resolve the problem as
 7. The server must generate the private key, verify with public key in server and generate digital signatures.
 8. The file submitted must be hashed and put inside the message which is used to generate the digital signature.
 10. The poster can reject the draft, or approve it with his mnemonic.
-11. Upon approval, the poster must sign to release payment as well.
+11. Upon approval, the poster must sign to release payment to the server.
 12. The server must generate the private key, verify with public key in server and generate digital signatures.
-13. 
-Upon approval, the IP is released to the poster and the bounty is released to the freelancer.
+13. The system must then prompt the freelancer to release the IP to receive the payment.
+14. The freelancer can release the IP to the server with his mnemonic.
+15. The server must generate the private key, verify with public key in server and generate digital signatures.
+16. Upon verification of digital signatures and message signatures, the IP is released to the poster and the bounty is released to the freelancer.
+
+Note that the payment and IP is first sent to the server. If the payment is sent directly to the freelancer, the freelancer would be able to take the money without releasing the IP. Likewise, if the freelancer releases the IP to the poster, the poster would not need to make payment. The server is treated as a trusted intermediary in this scenario. 
 
 
 
@@ -57,23 +59,17 @@ Backend: NestJS
 Database: PostgreSQL deployed on Heroku
 
 ### Crypto packages used
-1. bitcore-lib
-2. bitcore-mnemonic
+1. [bitcore-lib]("https://github.com/bitpay/bitcore-lib")
+2. [bitcore-mnemonic]("https://github.com/bitpay/bitcore-mnemonic")
 
 ## Use of code
 ### Run the app locally
-
-#### With Docker
-```
-docker run -p 3000:3000 -p 5000:5000 -d sweesenkoh/failedquiz1_fiver_app:latest
-```
-
-or
 
 
 #### Manual setup
 
 Install all dependencies
+
 ```
 yarn setup
 ```
@@ -82,8 +78,4 @@ Start both frontend and backend
 yarn start
 ```
 
-
-
-### Yarn install error in ubuntu
-
-https://stackoverflow.com/questions/46013544/yarn-install-command-error-no-such-file-or-directory-install
+Presentation slides [here]("https://docs.google.com/presentation/d/1lBnCtuH6CUzQHM4sri9eJHDVPuQDBiB1QQNZBDBVlh4/edit?usp=sharing")
