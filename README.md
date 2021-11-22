@@ -41,7 +41,42 @@ This resolve the problem as
 
 Note that the payment and IP is first sent to the server. If the payment is sent directly to the freelancer, the freelancer would be able to take the money without releasing the IP. Likewise, if the freelancer releases the IP to the poster, the poster would not need to make payment. The server is treated as a trusted intermediary in this scenario. 
 
+### Message Structure
 
+Message signature Format for creating draft
+```
+{
+   "fromUserId":
+   "toUserId":
+   "taskId":
+   "createdOn": 
+   "status":
+   "filehash":
+}
+```
+
+Message signature Format for approval, rejection, release IP
+```
+{
+   "fromUserId":
+   "toUserId":
+   "taskId":
+   "createdOn": 
+   "status":
+}
+```
+
+Message signature from server to freelancer and poster
+```
+{
+   "fromUserId":
+   "ipToUserId":
+   "paymentToUserId":
+   "taskId":
+   "createdOn": 
+   "status":
+}
+```
 
 ### DB Design
 ![img](https://github.com/Failed-Quiz-1/Secure-and-Accountable-bounties-for-Digital-Tasks/blob/main/Secure%20Bounty%20-%20Page%201.png)
@@ -59,8 +94,8 @@ Backend: NestJS
 Database: PostgreSQL deployed on Heroku
 
 ### Crypto packages used
-1. [bitcore-lib]("https://github.com/bitpay/bitcore-lib")
-2. [bitcore-mnemonic]("https://github.com/bitpay/bitcore-mnemonic")
+1. [bitcore-lib](https://github.com/bitpay/bitcore-lib)
+2. [bitcore-mnemonic](https://github.com/bitpay/bitcore-mnemonic)
 
 ## Use of code
 ### Run the app locally
@@ -78,4 +113,4 @@ Start both frontend and backend
 yarn start
 ```
 
-Presentation slides [here]("https://docs.google.com/presentation/d/1lBnCtuH6CUzQHM4sri9eJHDVPuQDBiB1QQNZBDBVlh4/edit?usp=sharing")
+Presentation slides [here](https://docs.google.com/presentation/d/1lBnCtuH6CUzQHM4sri9eJHDVPuQDBiB1QQNZBDBVlh4/edit?usp=sharing)
