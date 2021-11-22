@@ -10,7 +10,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AppService } from './app.service';
 import { Multer } from 'multer';
-
+const crypto = require('crypto');
+import * as fs from 'fs';
 
 @Controller()
 export class AppController {
@@ -24,7 +25,16 @@ export class AppController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file: Multer.File) {
-    return file.filename;
+    const fileBuffer = fs.readFileSync("./upload/" + file.filename);
+    const hashSum = crypto.createHash('sha256');
+    hashSum.update(fileBuffer);
+    const hex = hashSum.digest('hex');
+    console.log("VAL IS " + hex);
+    const fileVal = {
+      filename: file.filename,
+      hash: hex,
+    }
+    return fileVal;
     //return {
     //  filePath: `/upload/${file.filename}`,
     //};
