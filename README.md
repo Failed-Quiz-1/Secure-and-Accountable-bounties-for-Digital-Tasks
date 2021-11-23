@@ -28,18 +28,23 @@ This resolve the problem as
 3. The system must store public key, and give user a mnemonic which can deterministically produce his private key.
 4. Upon login, the user must be able to create a job posting.
 5. The poster must also be able to add multiple tasks under the job with a bounty and its description.
+#### --Digital Signatures with draft submission by freelancer--
 6. The freelancer must be able to submit drafts and “sign” it with his mnemonic.
-7. The server must generate the private key, verify with public key in server and generate digital signatures.
+7. The server must generate the private key, verify with public key in server and generate a digital signature.
 8. The file submitted must be hashed and put inside the message which is used to generate the digital signature.
-10. The poster can reject the draft, or approve it with his mnemonic.
+#### --Digital Signatures with draft approval/rejection by job poster--
+9. The poster can reject the draft, or approve it with his mnemonic.
+10. The status of draft (approval or rejection) must be reflected in the signature message.
 11. Upon approval, the poster must sign to release payment to the server.
 12. The server must generate the private key, verify with public key in server and generate digital signatures.
+#### --Digital Signatures with release of IP by freelancer--
 13. The system must then prompt the freelancer to release the IP to receive the payment.
 14. The freelancer can release the IP to the server with his mnemonic.
 15. The server must generate the private key, verify with public key in server and generate digital signatures.
+#### --Digital Signatures with release of IP and bounty by server--
 16. Upon verification of digital signatures and message signatures, the IP is released to the poster and the bounty is released to the freelancer.
 
-Note that the payment and IP is first sent to the server. If the payment is sent directly to the freelancer, the freelancer would be able to take the money without releasing the IP. Likewise, if the freelancer releases the IP to the poster, the poster would not need to make payment. The server is treated as a trusted intermediary in this scenario. 
+Note that the payment and IP is first sent to the server. If the payment is sent directly to the freelancer, the freelancer would be able to take the money without releasing the IP. Likewise, if the freelancer releases the IP to the poster, the poster would not need to make payment. The server is treated as a trusted intermediary in this application. 
 
 ### Message Structure
 
